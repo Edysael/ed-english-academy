@@ -1,0 +1,3346 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#050510">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="manifest.json">
+<title>ED English Academy</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,700;1,300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<style>
+/* ═══════════════════════════════════════════
+   TOKENS & RESET
+   ═══════════════════════════════════════════ */
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+:root {
+  --bg:       #050510;
+  --bg2:      #080818;
+  --surface:  #0D0D22;
+  --surface2: #121228;
+  --border:   rgba(255,255,255,0.07);
+  --border2:  rgba(255,255,255,0.12);
+  --text:     #F0F0FF;
+  --text2:    #7070A0;
+  --text3:    #4A4A70;
+  --accent:   #5B6EF5;
+  --accent2:  #7B5CF5;
+  --teal:     #00D4B8;
+  --gold:     #F5C842;
+  --red:      #F5425A;
+  --green:    #42F5A0;
+  --blue:     #0033a0;
+  --r:        16px;
+  --r2:       24px;
+  --safe-b:   env(safe-area-inset-bottom,0px);
+}
+html,body { height:100%; overflow:hidden; background:var(--bg); color:var(--text); font-family:'DM Sans',sans-serif; }
+
+/* ═══════════════════════════════════════════
+   SPLASH
+   ═══════════════════════════════════════════ */
+#splash {
+  position:fixed; inset:0; z-index:9999;
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  background:var(--bg);
+  overflow:hidden;
+}
+#splash::before {
+  content:'';
+  position:absolute; inset:0;
+  background:
+    radial-gradient(ellipse 80% 50% at 20% 20%, rgba(91,110,245,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(123,92,245,0.12) 0%, transparent 55%),
+    radial-gradient(ellipse 40% 60% at 50% 50%, rgba(0,212,184,0.05) 0%, transparent 70%);
+  pointer-events:none;
+}
+/* Grid de fondo */
+#splash::after {
+  content:'';
+  position:absolute; inset:0;
+  background-image:
+    linear-gradient(rgba(255,255,255,.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+  background-size:60px 60px;
+  mask-image:radial-gradient(ellipse 80% 80% at 50% 50%, black 30%, transparent 100%);
+  pointer-events:none;
+}
+
+.splash-logo {
+  width:120px; height:120px;
+  border-radius:32px;
+  background:linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  display:flex; align-items:center; justify-content:center;
+  position:relative; z-index:1;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.1),
+    0 20px 60px rgba(91,110,245,0.4),
+    0 0 100px rgba(91,110,245,0.2);
+  animation: logoPop 0.8s cubic-bezier(0.34,1.56,0.64,1) both;
+  margin-bottom:28px;
+}
+@keyframes logoPop {
+  from { opacity:0; transform:scale(0.5) translateY(20px); }
+  to   { opacity:1; transform:scale(1) translateY(0); }
+}
+.splash-logo-inner {
+  font-family:'Syne',sans-serif;
+  font-size:56px; font-weight:800;
+  color:white;
+  letter-spacing:-2px;
+  text-shadow:0 2px 20px rgba(0,0,0,0.3);
+}
+.splash-badge {
+  position:absolute; top:-8px; right:-8px;
+  background:var(--gold);
+  color:#000; font-size:10px; font-weight:700;
+  padding:3px 8px; border-radius:20px;
+  font-family:'Syne',sans-serif;
+  letter-spacing:0.5px;
+}
+
+.splash-title {
+  font-family:'Syne',sans-serif;
+  font-size:28px; font-weight:800;
+  color:var(--text);
+  letter-spacing:-0.5px;
+  margin-bottom:8px;
+  position:relative; z-index:1;
+  animation:fadeUp 0.6s 0.3s both;
+}
+.splash-sub {
+  font-size:14px; color:var(--text2);
+  margin-bottom:48px;
+  position:relative; z-index:1;
+  animation:fadeUp 0.6s 0.45s both;
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(12px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* Login box */
+.login-box {
+  width:min(380px,92vw);
+  position:relative; z-index:1;
+  animation:fadeUp 0.6s 0.6s both;
+}
+.login-title {
+  font-family:'Syne',sans-serif;
+  font-size:13px; font-weight:700;
+  color:var(--text3); letter-spacing:2px; text-transform:uppercase;
+  text-align:center; margin-bottom:20px;
+}
+.btn-primary {
+  width:100%; padding:15px 20px;
+  border-radius:50px; border:none;
+  background:linear-gradient(135deg, var(--accent), var(--accent2));
+  color:white; font-size:15px; font-weight:600;
+  font-family:'DM Sans',sans-serif;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;
+  transition:transform 0.15s, box-shadow 0.15s;
+  box-shadow:0 8px 32px rgba(91,110,245,0.35);
+  margin-bottom:12px;
+}
+.btn-primary:hover { transform:translateY(-1px); box-shadow:0 12px 40px rgba(91,110,245,0.45); }
+.btn-primary:active { transform:scale(0.97); }
+.btn-secondary {
+  width:100%; padding:14px 20px;
+  border-radius:50px;
+  border:1px solid var(--border2);
+  background:rgba(255,255,255,0.04);
+  color:var(--text2); font-size:15px; font-weight:500;
+  font-family:'DM Sans',sans-serif;
+  cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px;
+  transition:all 0.2s;
+  margin-bottom:12px;
+}
+.btn-secondary:hover { background:rgba(255,255,255,0.08); color:var(--text); border-color:var(--border2); }
+.btn-secondary:active { transform:scale(0.97); }
+
+.divider {
+  display:flex; align-items:center; gap:12px;
+  margin:8px 0 16px;
+}
+.divider hr { flex:1; border:none; border-top:1px solid var(--border); }
+.divider span { font-size:12px; color:var(--text3); }
+
+/* Formulario de registro */
+#loginForm {
+  display:none;
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:20px;
+  padding:20px;
+  margin-top:8px;
+}
+#loginForm label {
+  display:block; font-size:11px; font-weight:600;
+  color:var(--text2); letter-spacing:1px; text-transform:uppercase;
+  margin-bottom:6px; margin-top:14px;
+}
+#loginForm label:first-child { margin-top:0; }
+#loginForm input, #loginForm select {
+  width:100%; padding:11px 14px;
+  border-radius:12px;
+  border:1px solid var(--border2);
+  background:var(--bg2);
+  color:var(--text);
+  font-size:14px; font-family:'DM Sans',sans-serif;
+}
+#loginForm input:focus, #loginForm select:focus {
+  outline:none; border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(91,110,245,0.15);
+}
+#loginForm select option { background:var(--bg2); }
+.form-actions { display:flex; gap:8px; margin-top:16px; }
+.form-actions .btn-primary { margin-bottom:0; flex:1; }
+.btn-cancel {
+  padding:11px 18px; border-radius:50px;
+  border:1px solid var(--border); background:none;
+  color:var(--text2); cursor:pointer; font-size:14px;
+  font-family:'DM Sans',sans-serif;
+  transition:all 0.2s;
+}
+.btn-cancel:hover { background:rgba(255,255,255,0.05); }
+
+/* Perfiles guardados */
+#savedProfiles { margin-top:4px; }
+.saved-label {
+  font-size:11px; color:var(--text3); letter-spacing:1.5px;
+  text-transform:uppercase; text-align:center;
+  margin:12px 0 10px;
+}
+.profile-chip {
+  display:flex; align-items:center; gap:12px;
+  padding:12px 16px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px;
+  cursor:pointer; margin-bottom:8px;
+  transition:all 0.2s;
+}
+.profile-chip:hover { border-color:var(--accent); background:var(--surface2); }
+.profile-chip-av {
+  width:36px; height:36px; border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex; align-items:center; justify-content:center;
+  font-size:15px; font-weight:700; color:white;
+  flex-shrink:0;
+}
+.profile-chip-info { flex:1; }
+.profile-chip-name { font-size:14px; font-weight:600; color:var(--text); }
+.profile-chip-meta { font-size:11px; color:var(--text2); margin-top:1px; }
+.profile-chip-arrow { color:var(--text3); font-size:16px; }
+
+/* ═══════════════════════════════════════════
+   MAIN APP
+   ═══════════════════════════════════════════ */
+#app { display:none; position:fixed; inset:0; flex-direction:column; }
+#app.show { display:flex; }
+
+/* HEADER */
+.header {
+  height:58px; flex-shrink:0;
+  background:rgba(5,5,16,0.85);
+  backdrop-filter:blur(24px);
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; padding:0 16px; gap:10px;
+  z-index:100;
+}
+.hav {
+  width:34px; height:34px; border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex; align-items:center; justify-content:center;
+  font-size:14px; font-weight:700; color:white; flex-shrink:0;
+  border:2px solid rgba(255,255,255,0.1);
+  overflow:hidden;
+}
+.hav img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.hname { font-weight:600; font-size:14px; flex:1; color:var(--text); }
+.hxp {
+  background:rgba(245,200,66,0.12);
+  border:1px solid rgba(245,200,66,0.2);
+  border-radius:20px; padding:4px 10px;
+  font-size:11px; font-weight:700; color:var(--gold);
+  font-family:'Syne',sans-serif;
+}
+.hbtn {
+  background:none; border:none; color:var(--text2);
+  cursor:pointer; font-size:17px; padding:6px;
+  transition:color 0.2s;
+}
+.hbtn:hover { color:var(--text); }
+
+/* PANELS */
+.panels { flex:1; overflow:hidden; position:relative; }
+.panel {
+  position:absolute; inset:0;
+  overflow-y:auto; overflow-x:hidden;
+  padding:20px 16px calc(76px + var(--safe-b)) 16px;
+  display:none;
+  -webkit-overflow-scrolling:touch;
+}
+.panel.active { display:block; }
+.panel::-webkit-scrollbar { width:3px; }
+.panel::-webkit-scrollbar-thumb { background:rgba(255,255,255,0.08); border-radius:2px; }
+
+/* BOTTOM NAV */
+.bottom-nav {
+  height:calc(62px + var(--safe-b));
+  padding-bottom:var(--safe-b);
+  background:rgba(5,5,16,0.95);
+  backdrop-filter:blur(24px);
+  border-top:1px solid var(--border);
+  display:flex; justify-content:space-around; align-items:center;
+  flex-shrink:0; z-index:100;
+}
+.nav-btn {
+  flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center;
+  gap:4px; background:none; border:none; cursor:pointer;
+  color:var(--text3); padding:8px 0;
+  transition:color 0.2s;
+  position:relative;
+}
+.nav-btn.active { color:var(--accent); }
+.nav-btn i { font-size:20px; }
+.nav-btn span { font-size:9px; font-weight:600; letter-spacing:0.5px; text-transform:uppercase; }
+.nav-btn::before {
+  content:'';
+  position:absolute; top:0; left:50%; transform:translateX(-50%);
+  width:0; height:2px; border-radius:0 0 2px 2px;
+  background:var(--accent);
+  transition:width 0.3s;
+}
+.nav-btn.active::before { width:24px; }
+
+/* ═══════════════════════════════════════════
+   HOME
+   ═══════════════════════════════════════════ */
+.greeting {
+  margin-bottom:20px;
+}
+.greeting-hi { font-size:13px; color:var(--text2); margin-bottom:2px; }
+.greeting-name {
+  font-family:'Syne',sans-serif;
+  font-size:26px; font-weight:800; color:var(--text);
+  letter-spacing:-0.5px;
+}
+.greeting-name span { color:var(--accent); }
+
+/* Stats */
+.stats-row { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:16px; }
+.stat-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding:16px;
+  position:relative; overflow:hidden;
+  transition:border-color 0.2s;
+}
+.stat-card::before {
+  content:'';
+  position:absolute; inset:0;
+  background:linear-gradient(135deg, rgba(91,110,245,0.06) 0%, transparent 60%);
+  pointer-events:none;
+}
+.stat-card:nth-child(2)::before { background:linear-gradient(135deg, rgba(0,212,184,0.06) 0%, transparent 60%); }
+.stat-card:nth-child(3)::before { background:linear-gradient(135deg, rgba(245,200,66,0.06) 0%, transparent 60%); }
+.stat-card:nth-child(4)::before { background:linear-gradient(135deg, rgba(123,92,245,0.06) 0%, transparent 60%); }
+.stat-val {
+  font-family:'Syne',sans-serif;
+  font-size:30px; font-weight:800; line-height:1;
+  color:var(--text); margin-bottom:4px;
+}
+.stat-lbl { font-size:11px; color:var(--text2); font-weight:500; }
+.stat-icon { font-size:22px; position:absolute; top:14px; right:14px; opacity:0.4; }
+
+/* Progress bar */
+.prog-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding:18px 20px;
+  margin-bottom:16px;
+  display:flex; align-items:center; gap:16px;
+}
+.prog-icon { font-size:36px; flex-shrink:0; }
+.prog-info { flex:1; }
+.prog-label {
+  font-family:'Syne',sans-serif;
+  font-size:14px; font-weight:700; color:var(--text);
+  margin-bottom:2px;
+}
+.prog-sub { font-size:11px; color:var(--text2); margin-bottom:8px; }
+.prog-track {
+  background:var(--bg2); border-radius:10px; height:6px;
+  overflow:hidden;
+}
+.prog-fill {
+  height:100%; border-radius:10px;
+  background:linear-gradient(90deg, var(--accent), var(--teal));
+  transition:width 0.8s cubic-bezier(0.4,0,0.2,1);
+}
+.prog-pct {
+  font-family:'Syne',sans-serif;
+  font-size:13px; font-weight:700; color:var(--accent);
+  flex-shrink:0;
+}
+
+/* Chart */
+.chart-wrap {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding:18px;
+  margin-bottom:16px;
+}
+.chart-title {
+  font-size:11px; font-weight:700; color:var(--text2);
+  letter-spacing:1.5px; text-transform:uppercase;
+  margin-bottom:14px;
+}
+.chart-wrap canvas { max-height:160px; }
+
+/* Voice card */
+.voice-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding:20px;
+  margin-bottom:16px;
+  text-align:center;
+  position:relative; overflow:hidden;
+}
+.voice-card::before {
+  content:'';
+  position:absolute; inset:0;
+  background:linear-gradient(135deg, rgba(91,110,245,0.08), rgba(0,212,184,0.04));
+  pointer-events:none;
+}
+.voice-label {
+  font-size:10px; font-weight:700; color:var(--accent);
+  letter-spacing:2px; text-transform:uppercase;
+  margin-bottom:12px; position:relative;
+}
+.voice-phrase {
+  font-size:15px; font-weight:500; color:var(--text);
+  min-height:44px; margin-bottom:16px;
+  line-height:1.5; position:relative;
+}
+.mic-btn {
+  width:64px; height:64px; border-radius:50%;
+  border:2px solid var(--border2);
+  background:var(--surface2);
+  font-size:24px; cursor:pointer; color:var(--text2);
+  transition:all 0.2s;
+  display:inline-flex; align-items:center; justify-content:center;
+  position:relative;
+}
+.mic-btn:hover { border-color:var(--accent); color:var(--accent); }
+.mic-btn.listening {
+  background:var(--red); border-color:var(--red); color:white;
+  animation:pulse 1.2s infinite;
+}
+@keyframes pulse {
+  0%,100% { transform:scale(1); box-shadow:0 0 0 0 rgba(245,66,90,0.4); }
+  50% { transform:scale(1.06); box-shadow:0 0 0 12px rgba(245,66,90,0); }
+}
+.voice-feedback { font-size:12px; color:var(--text2); margin-top:10px; min-height:18px; }
+.voice-controls { display:flex; gap:8px; justify-content:center; margin-top:12px; }
+.vnav-btn {
+  background:rgba(255,255,255,0.05);
+  border:1px solid var(--border);
+  color:var(--text2); padding:6px 14px;
+  border-radius:20px; font-size:12px; cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  transition:all 0.2s;
+}
+.vnav-btn:hover { background:rgba(255,255,255,0.1); color:var(--text); }
+
+/* Section titles */
+.sec-title {
+  font-family:'Syne',sans-serif;
+  font-size:16px; font-weight:700;
+  color:var(--text); margin-bottom:12px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.sec-title span { color:var(--accent); }
+.sec-badge {
+  font-size:11px; font-weight:600;
+  color:var(--text3); font-family:'DM Sans',sans-serif;
+}
+
+/* Achievements strip */
+.ach-strip {
+  display:flex; gap:10px; overflow-x:auto;
+  padding-bottom:6px; margin-bottom:20px;
+  scroll-snap-type:x mandatory;
+}
+.ach-strip::-webkit-scrollbar { display:none; }
+.ach-chip {
+  flex-shrink:0; scroll-snap-align:start;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px; padding:10px 14px;
+  text-align:center; min-width:80px;
+  transition:all 0.2s;
+}
+.ach-chip.unlocked {
+  background:linear-gradient(135deg, rgba(91,110,245,0.2), rgba(0,212,184,0.1));
+  border-color:rgba(91,110,245,0.3);
+}
+.ach-chip.locked { opacity:0.4; }
+.ach-chip-icon { font-size:26px; }
+.ach-chip-name { font-size:9px; font-weight:600; color:var(--text2); margin-top:4px; line-height:1.2; }
+
+/* Next lessons */
+.next-list { display:flex; flex-direction:column; gap:8px; }
+.next-row {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:14px 16px;
+  display:flex; align-items:center; gap:14px;
+  cursor:pointer; transition:all 0.2s;
+}
+.next-row:hover { border-color:rgba(91,110,245,0.3); transform:translateX(2px); }
+.next-row:active { transform:scale(0.98); }
+.next-num {
+  width:40px; height:40px; border-radius:12px;
+  background:rgba(91,110,245,0.1);
+  border:1px solid rgba(91,110,245,0.2);
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Syne',sans-serif;
+  font-size:13px; font-weight:800; color:var(--accent);
+  flex-shrink:0;
+}
+.next-info { flex:1; }
+.next-title { font-size:13px; font-weight:600; color:var(--text); }
+.next-meta { font-size:11px; color:var(--text2); margin-top:2px; }
+.next-arrow { color:var(--text3); font-size:14px; }
+
+/* ═══════════════════════════════════════════
+   LESSONS
+   ═══════════════════════════════════════════ */
+.search-wrap {
+  display:flex; align-items:center; gap:10px;
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:14px; padding:10px 16px;
+  margin-bottom:14px;
+  transition:border-color 0.2s;
+}
+.search-wrap:focus-within { border-color:var(--accent); }
+.search-wrap i { color:var(--text3); font-size:14px; }
+.search-wrap input {
+  flex:1; background:none; border:none; outline:none;
+  color:var(--text); font-size:14px; font-family:'DM Sans',sans-serif;
+}
+.search-wrap input::placeholder { color:var(--text3); }
+
+.filter-row { display:flex; gap:6px; overflow-x:auto; margin-bottom:16px; }
+.filter-row::-webkit-scrollbar { display:none; }
+.ftab {
+  flex-shrink:0; padding:7px 14px; border-radius:20px;
+  font-size:12px; font-weight:600;
+  border:1px solid var(--border);
+  background:none; color:var(--text2); cursor:pointer;
+  font-family:'DM Sans',sans-serif;
+  transition:all 0.2s;
+}
+.ftab.active { background:var(--accent); border-color:var(--accent); color:white; }
+.ftab:hover:not(.active) { border-color:var(--border2); color:var(--text); }
+
+.lessons-list { display:flex; flex-direction:column; gap:6px; }
+.lesson-row {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r);
+  padding:14px 16px;
+  display:flex; align-items:center; gap:14px;
+  cursor:pointer; transition:all 0.2s;
+}
+.lesson-row:hover { border-color:var(--border2); }
+.lesson-row:active { transform:scale(0.98); }
+.lesson-row.done { border-left:2px solid var(--teal); }
+.lnum {
+  width:40px; height:40px; border-radius:12px;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Syne',sans-serif;
+  font-size:12px; font-weight:800; flex-shrink:0;
+}
+.lnum.basic { background:rgba(0,212,184,0.08); color:var(--teal); border:1px solid rgba(0,212,184,0.15); }
+.lnum.intermediate { background:rgba(245,200,66,0.08); color:var(--gold); border:1px solid rgba(245,200,66,0.15); }
+.lnum.advanced { background:rgba(245,66,90,0.08); color:var(--red); border:1px solid rgba(245,66,90,0.15); }
+.lnum.done-num { background:rgba(66,245,160,0.08); color:var(--green); border:1px solid rgba(66,245,160,0.15); }
+.lbody { flex:1; }
+.ltitle { font-size:14px; font-weight:600; color:var(--text); }
+.lsub { font-size:11px; color:var(--text2); margin-top:2px; }
+.lcheck { color:var(--teal); font-size:16px; }
+
+/* ═══════════════════════════════════════════
+   ACHIEVEMENTS
+   ═══════════════════════════════════════════ */
+.ach-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+.ach-card {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding:18px; text-align:center;
+  transition:all 0.3s;
+}
+.ach-card.unlocked {
+  background:linear-gradient(135deg, rgba(91,110,245,0.15), rgba(0,212,184,0.08));
+  border-color:rgba(91,110,245,0.25);
+}
+.ach-card.locked { opacity:0.35; }
+.ach-card-icon { font-size:34px; margin-bottom:8px; }
+.ach-card-name {
+  font-family:'Syne',sans-serif;
+  font-size:12px; font-weight:700; color:var(--text);
+  margin-bottom:4px;
+}
+.ach-card-desc { font-size:10px; color:var(--text2); line-height:1.4; }
+
+/* ═══════════════════════════════════════════
+   PROFILE
+   ═══════════════════════════════════════════ */
+.prof-hero {
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:var(--r2);
+  padding:24px;
+  text-align:center;
+  margin-bottom:16px;
+  position:relative; overflow:hidden;
+}
+.prof-hero::before {
+  content:'';
+  position:absolute; top:-40px; left:50%; transform:translateX(-50%);
+  width:200px; height:200px;
+  background:radial-gradient(circle, rgba(91,110,245,0.12) 0%, transparent 70%);
+  pointer-events:none;
+}
+.prof-av {
+  width:80px; height:80px; border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  border:3px solid rgba(255,255,255,0.1);
+  margin:0 auto 14px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:32px; font-weight:800; color:white;
+  cursor:pointer; transition:transform 0.2s;
+  position:relative; overflow:hidden;
+}
+.prof-av:hover { transform:scale(1.05); }
+.prof-av img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.prof-name {
+  font-family:'Syne',sans-serif;
+  font-size:20px; font-weight:800; color:var(--text);
+}
+.prof-email { font-size:12px; color:var(--text2); margin-top:2px; }
+.prof-level { font-size:12px; color:var(--accent); margin-top:6px; font-weight:600; }
+.prof-stats {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:1px; background:var(--border);
+  margin-top:20px; border-radius:12px; overflow:hidden;
+}
+.prof-stat { background:var(--surface2); padding:12px 8px; text-align:center; }
+.prof-stat-val {
+  font-family:'Syne',sans-serif;
+  font-size:20px; font-weight:800; color:var(--gold);
+}
+.prof-stat-lbl { font-size:10px; color:var(--text2); margin-top:2px; }
+
+.paction {
+  width:100%; padding:14px; border-radius:50px; border:none;
+  font-size:14px; font-weight:600; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  font-family:'DM Sans',sans-serif;
+  transition:all 0.2s; margin-bottom:10px;
+}
+.paction:active { transform:scale(0.97); }
+.pa-main { background:linear-gradient(135deg,var(--accent),var(--accent2)); color:white; }
+.pa-edit { background:var(--surface); border:1px solid var(--border); color:var(--text2); }
+.pa-share { background:var(--surface); border:1px solid var(--border); color:var(--text2); }
+.pa-logout { background:rgba(245,66,90,0.08); border:1px solid rgba(245,66,90,0.2); color:var(--red); }
+.pa-reset { background:rgba(245,66,90,0.05); border:1px solid rgba(245,66,90,0.1); color:rgba(245,66,90,0.6); }
+
+/* ═══════════════════════════════════════════
+   LESSON MODAL
+   ═══════════════════════════════════════════ */
+#modal {
+  display:none; position:fixed; inset:0; z-index:500;
+  background:rgba(0,0,0,0.7); backdrop-filter:blur(8px);
+  align-items:flex-end; justify-content:center;
+}
+#modal.open { display:flex; }
+.modal-box {
+  background:var(--surface);
+  border-radius:28px 28px 0 0;
+  width:100%; max-height:92vh;
+  display:flex; flex-direction:column;
+  animation:slideUp 0.35s cubic-bezier(0.34,1.2,0.64,1);
+  border-top:1px solid var(--border2);
+}
+@keyframes slideUp { from { transform:translateY(100%); } to { transform:translateY(0); } }
+.modal-handle {
+  width:36px; height:4px; background:var(--border2);
+  border-radius:2px; margin:12px auto 0;
+}
+.modal-head {
+  padding:14px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex; align-items:center; gap:12px;
+}
+.modal-head h2 {
+  flex:1; font-size:15px; font-weight:700;
+  font-family:'Syne',sans-serif; color:var(--text);
+}
+.modal-pts {
+  background:rgba(245,200,66,0.1);
+  border:1px solid rgba(245,200,66,0.2);
+  border-radius:20px; padding:4px 10px;
+  font-size:11px; font-weight:700; color:var(--gold);
+  font-family:'Syne',sans-serif;
+}
+.modal-close {
+  background:var(--surface2); border:1px solid var(--border);
+  color:var(--text2); font-size:16px; cursor:pointer;
+  width:32px; height:32px; border-radius:50%;
+  display:flex; align-items:center; justify-content:center;
+  transition:all 0.2s;
+}
+.modal-close:hover { background:var(--border); color:var(--text); }
+.modal-body { flex:1; overflow-y:auto; padding:20px; -webkit-overflow-scrolling:touch; }
+.modal-foot {
+  padding:14px 20px calc(14px + var(--safe-b));
+  border-top:1px solid var(--border);
+}
+
+/* Modal content */
+.modal-body h3 { font-family:'Syne',sans-serif; font-size:16px; font-weight:700; color:var(--accent); margin-bottom:12px; }
+.modal-body p { font-size:14px; color:var(--text2); line-height:1.65; margin-bottom:14px; }
+.modal-body strong { color:var(--text); }
+.modal-body em { color:var(--teal); font-style:normal; }
+.vocab-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:8px; margin:12px 0; }
+.vcard {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:12px; padding:12px;
+  transition:border-color 0.2s;
+}
+.vcard:hover { border-color:var(--border2); }
+.vcard-word {
+  font-size:14px; font-weight:700; color:var(--teal);
+  display:flex; align-items:center; justify-content:space-between;
+}
+.vcard-meaning { font-size:11px; color:var(--text2); margin-top:4px; }
+.vcard-pron { font-size:10px; color:rgba(245,200,66,0.6); margin-top:2px; }
+.speak-btn {
+  background:rgba(0,212,184,0.1);
+  border:1px solid rgba(0,212,184,0.2);
+  color:var(--teal); border-radius:6px; padding:3px 7px;
+  font-size:11px; cursor:pointer; flex-shrink:0;
+  transition:all 0.2s;
+}
+.speak-btn:hover { background:var(--teal); color:var(--bg); }
+.quiz-block {
+  background:var(--bg2); border:1px solid var(--border);
+  border-radius:14px; padding:16px; margin:12px 0;
+}
+.quiz-q { font-size:14px; font-weight:600; color:var(--text); margin-bottom:12px; }
+.quiz-opts { display:flex; flex-direction:column; gap:8px; }
+.quiz-opt {
+  padding:10px 14px; border-radius:10px;
+  border:1px solid var(--border);
+  background:rgba(255,255,255,0.03);
+  font-size:13px; cursor:pointer;
+  transition:all 0.2s; text-align:left;
+  color:var(--text2); width:100%;
+  font-family:'DM Sans',sans-serif;
+}
+.quiz-opt:hover { border-color:var(--accent); background:rgba(91,110,245,0.06); color:var(--text); }
+.quiz-opt.correct { background:rgba(66,245,160,0.1); border-color:var(--green); color:var(--green); }
+.quiz-opt.wrong { background:rgba(245,66,90,0.1); border-color:var(--red); color:var(--red); }
+.quiz-feedback { font-size:13px; margin-top:10px; font-weight:600; min-height:20px; }
+
+.btn-complete {
+  width:100%; padding:14px; border-radius:50px; border:none;
+  background:linear-gradient(135deg, var(--teal), #00B89E);
+  color:var(--bg); font-size:15px; font-weight:700; cursor:pointer;
+  display:flex; align-items:center; justify-content:center; gap:8px;
+  font-family:'DM Sans',sans-serif;
+  transition:all 0.2s;
+  box-shadow:0 8px 24px rgba(0,212,184,0.25);
+}
+.btn-complete:hover { transform:translateY(-1px); box-shadow:0 12px 32px rgba(0,212,184,0.35); }
+.btn-complete:active { transform:scale(0.97); }
+.btn-complete:disabled { opacity:0.4; cursor:not-allowed; transform:none; box-shadow:none; }
+
+/* ═══════════════════════════════════════════
+   AVATAR SELECTOR
+   ═══════════════════════════════════════════ */
+#avatarModal {
+  display:none; position:fixed; inset:0; z-index:600;
+  background:rgba(0,0,0,0.8); backdrop-filter:blur(10px);
+  align-items:center; justify-content:center;
+}
+#avatarModal.open { display:flex; }
+.avatar-box {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:28px;
+  width:min(420px,94vw);
+  max-height:85vh; overflow-y:auto;
+  padding:24px;
+}
+.avatar-box h3 {
+  font-family:'Syne',sans-serif;
+  font-size:18px; font-weight:800;
+  color:var(--text); text-align:center; margin-bottom:20px;
+}
+.av-preview {
+  width:90px; height:90px; border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  margin:0 auto 20px;
+  display:flex; align-items:center; justify-content:center;
+  font-size:44px; border:3px solid rgba(255,255,255,0.1);
+  overflow:hidden;
+}
+.av-preview img { width:100%; height:100%; object-fit:cover; border-radius:50%; }
+.av-gender-row { display:flex; gap:8px; justify-content:center; margin-bottom:20px; }
+.av-gbtn {
+  padding:8px 20px; border-radius:30px;
+  border:1px solid var(--border2);
+  background:var(--bg2); color:var(--text2);
+  cursor:pointer; font-weight:600; font-size:13px;
+  font-family:'DM Sans',sans-serif;
+  transition:all 0.2s;
+}
+.av-gbtn.active { background:var(--accent); border-color:var(--accent); color:white; }
+.av-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:20px; }
+.av-option {
+  background:var(--bg2);
+  border:2px solid var(--border);
+  border-radius:16px; padding:14px 8px;
+  cursor:pointer; text-align:center;
+  transition:all 0.2s;
+}
+.av-option:hover { border-color:var(--accent); }
+.av-option.sel { border-color:var(--accent); background:rgba(91,110,245,0.1); }
+.av-option-icon { font-size:42px; margin-bottom:6px; }
+.av-option-name { font-size:10px; color:var(--text2); }
+.av-actions { display:flex; gap:8px; }
+.av-save {
+  flex:1; padding:12px; border-radius:50px; border:none;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:white; font-weight:700; cursor:pointer;
+  font-family:'DM Sans',sans-serif; font-size:14px;
+}
+.av-cancel {
+  padding:12px 20px; border-radius:50px;
+  border:1px solid var(--border); background:none;
+  color:var(--text2); cursor:pointer;
+  font-family:'DM Sans',sans-serif; font-size:14px;
+  transition:all 0.2s;
+}
+.av-cancel:hover { background:var(--surface2); }
+
+/* ═══════════════════════════════════════════
+   EDIT PROFILE MODAL
+   ═══════════════════════════════════════════ */
+#editModal {
+  display:none; position:fixed; inset:0; z-index:600;
+  background:rgba(0,0,0,0.8); backdrop-filter:blur(10px);
+  align-items:center; justify-content:center;
+}
+#editModal.open { display:flex; }
+.edit-box {
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:28px;
+  width:min(400px,92vw);
+  padding:24px;
+}
+.edit-box h3 {
+  font-family:'Syne',sans-serif;
+  font-size:18px; font-weight:800;
+  margin-bottom:20px; color:var(--text);
+}
+.edit-label {
+  font-size:11px; font-weight:700;
+  color:var(--text2); letter-spacing:1px;
+  text-transform:uppercase; margin-bottom:6px;
+  margin-top:14px; display:block;
+}
+.edit-label:first-of-type { margin-top:0; }
+.edit-input {
+  width:100%; padding:11px 14px;
+  border-radius:12px;
+  border:1px solid var(--border2);
+  background:var(--bg2);
+  color:var(--text);
+  font-size:14px; font-family:'DM Sans',sans-serif;
+}
+.edit-input:focus { outline:none; border-color:var(--accent); box-shadow:0 0 0 3px rgba(91,110,245,0.15); }
+.edit-actions { display:flex; gap:8px; margin-top:20px; }
+
+/* ═══════════════════════════════════════════
+   TOAST
+   ═══════════════════════════════════════════ */
+#toast {
+  position:fixed;
+  bottom:calc(70px + var(--safe-b) + 12px);
+  left:50%; transform:translateX(-50%) translateY(16px);
+  background:var(--surface2);
+  border:1px solid var(--border2);
+  border-radius:40px; padding:10px 20px;
+  font-size:13px; font-weight:600; color:var(--text);
+  opacity:0; transition:all 0.3s;
+  z-index:1000; white-space:nowrap;
+  max-width:92vw; backdrop-filter:blur(20px);
+  box-shadow:0 8px 32px rgba(0,0,0,0.4);
+}
+#toast.show { opacity:1; transform:translateX(-50%) translateY(0); }
+
+/* ═══════════════════════════════════════════
+   CONFETTI
+   ═══════════════════════════════════════════ */
+.confetti-piece {
+  position:fixed; top:-20px; z-index:9998;
+  width:8px; border-radius:2px;
+  pointer-events:none;
+  animation:confettiFall linear forwards;
+}
+@keyframes confettiFall {
+  to { transform:translateY(110vh) rotate(720deg); opacity:0; }
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+   ═══════════════════════════════════════════ */
+@media(min-width:600px) {
+  .stats-row { grid-template-columns:repeat(4,1fr); }
+  .ach-grid { grid-template-columns:repeat(3,1fr); }
+  #modal { align-items:center; }
+  .modal-box { border-radius:28px; max-width:560px; max-height:85vh; }
+}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="splash">
+  <div class="splash-logo">
+    <div class="splash-logo-inner">ED</div>
+    <div class="splash-badge">PRO</div>
+  </div>
+  <div class="splash-title">ED English Academy</div>
+  <div class="splash-sub">80 lecciones · Audio · Certificado oficial</div>
+
+  <div class="login-box">
+    <div class="login-title">Empieza ahora</div>
+
+    <div id="loginMain">
+      <button class="btn-primary" onclick="showCreateProfile()">
+        <i class="fas fa-user-plus"></i> Crear mi perfil
+      </button>
+      <button class="btn-secondary" onclick="loginGuest()">
+        <i class="fas fa-user-circle"></i> Continuar como invitado
+      </button>
+      <div id="savedProfiles"></div>
+    </div>
+
+    <div id="loginForm">
+      <label for="inp_name">Tu nombre</label>
+      <input id="inp_name" type="text" placeholder="Ej: Carlos Pérez" maxlength="40" autocomplete="off">
+      <label for="inp_email">Email <span style="color:var(--text3);font-size:10px;text-transform:none;letter-spacing:0">(opcional)</span></label>
+      <input id="inp_email" type="email" placeholder="correo@ejemplo.com">
+      <label for="inp_level">Nivel de inglés</label>
+      <select id="inp_level">
+        <option value="">Sin especificar</option>
+        <option value="Principiante">🌱 Principiante</option>
+        <option value="Básico">📗 Básico</option>
+        <option value="Intermedio">📘 Intermedio</option>
+        <option value="Avanzado">📙 Avanzado</option>
+      </select>
+      <div class="form-actions">
+        <button class="btn-primary" onclick="submitCreateProfile()" style="margin-bottom:0">
+          <i class="fas fa-check-circle"></i> Crear perfil
+        </button>
+        <button class="btn-cancel" onclick="cancelCreateProfile()">✕</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+  <div class="header">
+    <div class="hav" id="hAvatar" onclick="openAvatarModal()">E</div>
+    <div class="hname" id="hName">Usuario</div>
+    <div class="hxp" id="hXP">0 XP</div>
+    <button class="hbtn" onclick="openAvatarModal()" title="Cambiar avatar"><i class="fas fa-user-edit"></i></button>
+    <button class="hbtn" onclick="confirmLogout()" title="Cambiar perfil"><i class="fas fa-sign-out-alt"></i></button>
+  </div>
+
+  <div class="panels">
+
+    <!-- HOME -->
+    <div class="panel active" id="pHome">
+      <div class="greeting">
+        <div class="greeting-hi">Bienvenido de nuevo 👋</div>
+        <div class="greeting-name"><span id="greetName">Estudiante</span></div>
+      </div>
+
+      <div class="stats-row">
+        <div class="stat-card"><div class="stat-icon">✅</div><div class="stat-val" id="sLecciones">0</div><div class="stat-lbl">Lecciones</div></div>
+        <div class="stat-card"><div class="stat-icon">🔥</div><div class="stat-val" id="sRacha">0</div><div class="stat-lbl">Racha días</div></div>
+        <div class="stat-card"><div class="stat-icon">⭐</div><div class="stat-val" id="sPuntos">0</div><div class="stat-lbl">Puntos XP</div></div>
+        <div class="stat-card"><div class="stat-icon">📈</div><div class="stat-val" id="sProg">0%</div><div class="stat-lbl">Progreso</div></div>
+      </div>
+
+      <div class="prog-card">
+        <div class="prog-icon" id="levelIcon">🌱</div>
+        <div class="prog-info">
+          <div class="prog-label" id="levelName">Principiante</div>
+          <div class="prog-sub" id="levelDesc">Completa lecciones para subir de nivel</div>
+          <div class="prog-track"><div class="prog-fill" id="levelBar" style="width:0%"></div></div>
+        </div>
+        <div class="prog-pct" id="progPct">0%</div>
+      </div>
+
+      <div class="chart-wrap">
+        <div class="chart-title">Progreso por nivel</div>
+        <canvas id="chartCanvas"></canvas>
+      </div>
+
+      <div class="voice-card">
+        <div class="voice-label">🎙 Práctica de pronunciación</div>
+        <div class="voice-phrase" id="voicePhrase">Toca el micrófono y pronuncia en inglés</div>
+        <button class="mic-btn" id="micBtn" onclick="toggleMic()"><i class="fas fa-microphone"></i></button>
+        <div class="voice-feedback" id="voiceFeedback"></div>
+        <div class="voice-controls">
+          <button class="vnav-btn" onclick="prevPhrase()">← Anterior</button>
+          <button class="vnav-btn" onclick="speakPhrase()">🔊 Escuchar</button>
+          <button class="vnav-btn" onclick="nextPhrase()">Siguiente →</button>
+        </div>
+      </div>
+
+      <div class="sec-title">Logros <span>recientes</span></div>
+      <div class="ach-strip" id="achStrip"></div>
+
+      <div class="sec-title">Próximas <span>lecciones</span></div>
+      <div class="next-list" id="nextLessons"></div>
+    </div>
+
+    <!-- LECCIONES -->
+    <div class="panel" id="pLessons">
+      <div class="sec-title">Todas las <span>Lecciones</span></div>
+      <div class="search-wrap">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Buscar lección..." oninput="filterLessons()">
+      </div>
+      <div class="filter-row">
+        <button class="ftab active" onclick="setFilter('all',this)">Todas</button>
+        <button class="ftab" onclick="setFilter('basic',this)">🌱 Básico</button>
+        <button class="ftab" onclick="setFilter('intermediate',this)">🌿 Intermedio</button>
+        <button class="ftab" onclick="setFilter('advanced',this)">🔴 Avanzado</button>
+        <button class="ftab" onclick="setFilter('done',this)">✅ Completadas</button>
+        <button class="ftab" onclick="setFilter('pending',this)">⏳ Pendientes</button>
+      </div>
+      <div class="lessons-list" id="lessonsList"></div>
+    </div>
+
+    <!-- LOGROS -->
+    <div class="panel" id="pAch">
+      <div class="sec-title">Mis <span>Logros</span></div>
+      <div class="ach-grid" id="achGrid"></div>
+    </div>
+
+    <!-- PERFIL -->
+    <div class="panel" id="pProfile">
+      <div class="prof-hero">
+        <div class="prof-av" id="profAv" onclick="openAvatarModal()">E</div>
+        <div class="prof-name" id="profName">Usuario</div>
+        <div class="prof-email" id="profEmail">invitado</div>
+        <div class="prof-level" id="profLevel"></div>
+        <div class="prof-stats">
+          <div class="prof-stat"><div class="prof-stat-val" id="profLec">0</div><div class="prof-stat-lbl">Lecciones</div></div>
+          <div class="prof-stat"><div class="prof-stat-val" id="profRacha">0</div><div class="prof-stat-lbl">Racha</div></div>
+          <div class="prof-stat"><div class="prof-stat-val" id="profPts">0</div><div class="prof-stat-lbl">Puntos</div></div>
+        </div>
+      </div>
+      <button class="paction pa-main" onclick="downloadCert()"><i class="fas fa-certificate"></i> Descargar Certificado</button>
+      <button class="paction pa-edit" onclick="openEditModal()"><i class="fas fa-user-edit"></i> Editar Perfil</button>
+      <button class="paction pa-share" onclick="shareProgress()"><i class="fas fa-share-alt"></i> Compartir Progreso</button>
+      <button class="paction pa-logout" onclick="confirmLogout()"><i class="fas fa-sign-out-alt"></i> Cambiar de Perfil</button>
+      <button class="paction pa-reset" onclick="resetProgress()"><i class="fas fa-trash-alt"></i> Reiniciar Progreso</button>
+    </div>
+
+  </div><!-- /panels -->
+
+  <div class="bottom-nav">
+    <button class="nav-btn active" onclick="showPanel('Home',this)"><i class="fas fa-home"></i><span>Inicio</span></button>
+    <button class="nav-btn" onclick="showPanel('Lessons',this)"><i class="fas fa-book-open"></i><span>Lecciones</span></button>
+    <button class="nav-btn" onclick="showPanel('Ach',this)"><i class="fas fa-trophy"></i><span>Logros</span></button>
+    <button class="nav-btn" onclick="showPanel('Profile',this)"><i class="fas fa-user"></i><span>Perfil</span></button>
+  </div>
+</div>
+
+<!-- MODAL LECCIÓN -->
+<div id="modal" onclick="modalBgClick(event)">
+  <div class="modal-box" id="modalBox">
+    <div class="modal-handle"></div>
+    <div class="modal-head">
+      <h2 id="modalTitle">Lección</h2>
+      <div class="modal-pts" id="modalPts">+10 pts</div>
+      <button class="modal-close" onclick="closeModal()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="modalBody"></div>
+    <div class="modal-foot">
+      <button class="btn-complete" id="btnComplete" onclick="completeLesson()">
+        <i class="fas fa-check-circle"></i> Completar Lección
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- AVATAR SELECTOR -->
+<div id="avatarModal" onclick="if(event.target===this)closeAvatarModal()">
+  <div class="avatar-box">
+    <h3>Elige tu avatar</h3>
+    <div class="av-preview" id="avPreview">🧑</div>
+    <div class="av-gender-row">
+      <button class="av-gbtn active" id="gBtnM" onclick="selectGender('male')">👨 Hombre</button>
+      <button class="av-gbtn" id="gBtnF" onclick="selectGender('female')">👩 Mujer</button>
+    </div>
+    <div class="av-grid" id="avGrid"></div>
+    <div class="av-actions">
+      <button class="av-save" onclick="saveAvatar()">Guardar avatar</button>
+      <button class="av-cancel" onclick="closeAvatarModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT PROFILE MODAL -->
+<div id="editModal" onclick="if(event.target===this)closeEditModal()">
+  <div class="edit-box">
+    <h3>✏️ Editar Perfil</h3>
+    <label class="edit-label">Nombre</label>
+    <input class="edit-input" id="edit_name" type="text" maxlength="40">
+    <label class="edit-label">Email</label>
+    <input class="edit-input" id="edit_email" type="email">
+    <label class="edit-label">Nivel de inglés</label>
+    <select class="edit-input" id="edit_level">
+      <option value="">Sin especificar</option>
+      <option value="Principiante">🌱 Principiante</option>
+      <option value="Básico">📗 Básico</option>
+      <option value="Intermedio">📘 Intermedio</option>
+      <option value="Avanzado">📙 Avanzado</option>
+    </select>
+    <div class="edit-actions">
+      <button class="av-save" onclick="saveEditProfile()" style="flex:1">Guardar</button>
+      <button class="av-cancel" onclick="closeEditModal()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+
+const TOTAL = 80;
+
+// Niveles: 1-40 básico, 41-65 intermedio, 66-80 avanzado
+function getLevelOf(id){
+  if(id<=40) return 'basic';
+  if(id<=65) return 'intermediate';
+  return 'advanced';
+}
+function getPtsOf(id){
+  if(id<=40) return 10;
+  if(id<=65) return 15;
+  return 20;
+}
+
+const TITLES = {
+  1:'El Alfabeto Inglés',2:'Pronunciación y Fonética',3:'Números 1-1000',4:'Los Colores',5:'Días y Meses',
+  6:'La Hora',7:'Pronombres Personales',8:'Verbo TO BE',9:'Saludos y Despedidas',10:'Artículos A, AN, THE',
+  11:'Sustantivos: Singular y Plural',12:'This, That, These, Those',13:'There Is / There Are',14:'There Was / There Were',15:'Some, Any, No',
+  16:'Palabras Derivadas',17:'How Much / How Many',18:'Much, Many, A lot of',19:'A little / A few',20:'Adjetivos Descriptivos',
+  21:'Adjetivos Posesivos',22:'Presente Simple',23:'Preguntas WH-',24:'Adverbios de Frecuencia',25:'Preposiciones de Lugar',
+  26:'Preposiciones de Tiempo',27:'Can / Can\'t',28:'Like + ING',29:'Want / Need / Would like',30:'Vocabulario: El Hogar',
+  31:'La Familia',32:'El Cuerpo Humano',33:'La Ropa y Accesorios',34:'Comida y Bebidas',35:'Animales y Naturaleza',
+  36:'Repaso Nivel Básico',37:'Los Deportes',38:'Profesiones y Trabajos',39:'Medios de Transporte',40:'Tecnología y Gadgets',
+  41:'Presente Continuo',42:'Pasado Simple',43:'Verbos Irregulares Esenciales',44:'Pasado Continuo',45:'Futuro con WILL',
+  46:'Futuro con GOING TO',47:'Presente Perfecto',48:'For / Since',49:'Already / Yet / Just',50:'Modales: Must, Should, Could',
+  51:'Modales: May, Might, Would',52:'Comparativos',53:'Superlativos',54:'Too / Enough',55:'So / Neither',
+  56:'Both / All / None / Either',57:'Condicionales 0 y 1',58:'Oraciones de Relativo',59:'Infinitivo vs. Gerundio',60:'100 Verbos de Acción',
+  61:'Repaso Nivel Intermedio',62:'Viajes y Turismo',63:'En el Restaurante',64:'Compras y Tiendas',65:'Salud y Medicina',
+  66:'Pasado Perfecto',67:'Condicionales 2 y 3',68:'Wish y If Only',69:'La Voz Pasiva',70:'Reported Speech',
+  71:'Phrasal Verbs Esenciales',72:'Idioms y Expresiones',73:'Conectores y Discurso',74:'Business English',75:'False Friends',
+  76:'Escritura Formal',77:'Conversación Avanzada',78:'Pronunciación Avanzada',79:'Cultura Anglosajona',80:'Examen Final y Certificado'
+};
+
+// Contenido estático — todas las 80 lecciones incluidas
+const STATIC_CONTENT = {};
+
+// Helpers globales para las lecciones
+function Q(id,question,options,correct){
+  return `<div class="quiz-block"><div class="quiz-q">❓ ${question}</div><div class="quiz-opts" id="${id}">${options.map((o,i)=>`<button class="quiz-opt" onclick="checkQuiz(this,${i},${correct},'${id}')">${o}</button>`).join('')}</div><div class="quiz-feedback" id="fb_${id}"></div></div>`;
+}
+function VC(word,meaning,pron,audio){
+  return `<div class="vcard"><div class="vcard-word">${word}<button class="speak-btn" onclick="say('${(audio||word).replace(/\\/g,'\\\\').replace(/'/g,"\\'")}')">🔊</button></div><div class="vcard-meaning">${meaning}</div>${pron?`<div class="vcard-pron">${pron}</div>`:''}</div>`;
+}
+
+// LECCIÓN 4: Colores
+STATIC_CONTENT[4] = () => `
+<h3>🎨 Los Colores en Inglés</h3>
+<p>Los colores son adjetivos que van <strong>antes del sustantivo</strong> en inglés: a <em>red</em> car, the <em>blue</em> sky.</p>
+<div class="vocab-grid">
+${VC('Red','Rojo','/rɛd/','red')}${VC('Blue','Azul','/bluː/','blue')}${VC('Green','Verde','/ɡriːn/','green')}
+${VC('Yellow','Amarillo','/ˈjɛloʊ/','yellow')}${VC('Orange','Naranja','/ˈɒrɪndʒ/','orange')}${VC('Purple','Morado','/ˈpɜːrpl/','purple')}
+${VC('Pink','Rosado','/pɪŋk/','pink')}${VC('Black','Negro','/blæk/','black')}${VC('White','Blanco','/waɪt/','white')}
+${VC('Brown','Marrón','/braʊn/','brown')}${VC('Gray','Gris','/ɡreɪ/','gray')}${VC('Gold','Dorado','/ɡoʊld/','gold')}
+</div>
+<p><strong>Ejemplos:</strong></p>
+<div class="vocab-grid">
+${VC('The sky is blue.','El cielo es azul.','','The sky is blue')}
+${VC('I have a red car.','Tengo un carro rojo.','','I have a red car')}
+${VC('She wears a green dress.','Ella usa un vestido verde.','','She wears a green dress')}
+</div>
+${Q('q4a1','¿Cómo se dice "amarillo" en inglés?',['Orange','Yellow','Green','Purple'],1)}`;
+
+// LECCIÓN 5: Días y Meses
+STATIC_CONTENT[5] = () => `
+<h3>📅 Días de la Semana y Meses del Año</h3>
+<p>En inglés los días y meses siempre se escriben con <strong>mayúscula</strong>.</p>
+<div class="vocab-grid">
+${VC('Monday','Lunes','/ˈmʌndeɪ/','Monday')}${VC('Tuesday','Martes','/ˈtjuːzdeɪ/','Tuesday')}
+${VC('Wednesday','Miércoles','/ˈwɛnzdeɪ/','Wednesday')}${VC('Thursday','Jueves','/ˈθɜːrzdeɪ/','Thursday')}
+${VC('Friday','Viernes','/ˈfraɪdeɪ/','Friday')}${VC('Saturday','Sábado','/ˈsætərdeɪ/','Saturday')}
+${VC('Sunday','Domingo','/ˈsʌndeɪ/','Sunday')}
+</div>
+<div class="vocab-grid">
+${VC('January','Enero','','January')}${VC('February','Febrero','','February')}${VC('March','Marzo','','March')}
+${VC('April','Abril','','April')}${VC('May','Mayo','','May')}${VC('June','Junio','','June')}
+${VC('July','Julio','','July')}${VC('August','Agosto','','August')}${VC('September','Septiembre','','September')}
+${VC('October','Octubre','','October')}${VC('November','Noviembre','','November')}${VC('December','Diciembre','','December')}
+</div>
+${Q('q5a1','¿Qué día va después del Wednesday?',['Tuesday','Monday','Thursday','Friday'],2)}`;
+
+// LECCIÓN 6: La Hora
+STATIC_CONTENT[6] = () => `
+<h3>🕐 La Hora en Inglés</h3>
+<p>Para preguntar la hora: <strong>"What time is it?"</strong> <button class="speak-btn" onclick="say('What time is it?')">🔊</button></p>
+<div class="vocab-grid">
+${VC('It\'s one o\'clock','Son las 1:00','','It is one o clock')}
+${VC('It\'s half past two','Son las 2:30','','It is half past two')}
+${VC('It\'s quarter past three','Son las 3:15','','It is quarter past three')}
+${VC('It\'s quarter to four','Son las 3:45','','It is quarter to four')}
+${VC('It\'s ten past five','Son las 5:10','','It is ten past five')}
+${VC('It\'s five to six','Son las 5:55','','It is five to six')}
+${VC('Noon / Midday','Mediodía','','noon')}${VC('Midnight','Medianoche','','midnight')}
+${VC('AM','Mañana (ante meridiem)','','a m')}${VC('PM','Tarde/Noche (post meridiem)','','p m')}
+</div>
+<p><strong>Regla:</strong> "Past" = minutos después de la hora | "To" = minutos antes de la próxima hora</p>
+${Q('q6a1','¿Cómo se dice "2:30" en inglés?',['Two thirty','Half past two','Both A and B are correct','Quarter past two'],2)}`;
+
+// LECCIÓN 7: Pronombres Personales
+STATIC_CONTENT[7] = () => `
+<h3>👤 Pronombres Personales</h3>
+<p>Los pronombres reemplazan a los sustantivos. Hay dos tipos: <strong>sujeto</strong> y <strong>objeto</strong>.</p>
+<div class="vocab-grid">
+${VC('I / Me','Yo / A mí','/aɪ/ /miː/','I, me')}${VC('You / You','Tú, Usted / Te, Le','/juː/','you')}
+${VC('He / Him','Él / A él','/hiː/ /hɪm/','he, him')}${VC('She / Her','Ella / A ella','/ʃiː/ /hɜːr/','she, her')}
+${VC('It / It','Ello / A ello','/ɪt/','it')}${VC('We / Us','Nosotros / Nos','/wiː/ /ʌs/','we, us')}
+${VC('They / Them','Ellos / Les','/ðeɪ/ /ðɛm/','they, them')}
+</div>
+<p><strong>Sujeto:</strong> <em>She</em> is happy. <button class="speak-btn" onclick="say('She is happy')">🔊</button></p>
+<p><strong>Objeto:</strong> I love <em>her</em>. <button class="speak-btn" onclick="say('I love her')">🔊</button></p>
+${Q('q7a1','¿Cuál es el pronombre objeto de "She"?',['She','He','Her','Him'],2)}`;
+
+// LECCIÓN 9: Saludos y Despedidas
+STATIC_CONTENT[9] = () => `
+<h3>👋 Saludos y Despedidas</h3>
+<p>Los saludos son lo primero que aprendes. ¡Practica en voz alta!</p>
+<div class="vocab-grid">
+${VC('Hello / Hi','Hola (formal/informal)','','Hello. Hi')}
+${VC('Good morning','Buenos días','','Good morning')}
+${VC('Good afternoon','Buenas tardes','','Good afternoon')}
+${VC('Good evening','Buenas noches (saludo)','','Good evening')}
+${VC('How are you?','¿Cómo estás?','','How are you?')}
+${VC('I\'m fine, thank you','Estoy bien, gracias','','I am fine, thank you')}
+${VC('Nice to meet you','Mucho gusto','','Nice to meet you')}
+${VC('Goodbye / Bye','Adiós','','Goodbye. Bye')}
+${VC('See you later','Hasta luego','','See you later')}
+${VC('See you tomorrow','Hasta mañana','','See you tomorrow')}
+${VC('Take care','Cuídate','','Take care')}
+${VC('Have a good day','Que tengas buen día','','Have a good day')}
+</div>
+${Q('q9a1','¿Qué responderías a "How are you?"?',['Good morning','I\'m fine, thank you','Goodbye','Nice to meet you'],1)}`;
+
+// LECCIÓN 10: Artículos
+STATIC_CONTENT[10] = () => `
+<h3>📌 Artículos: A, AN, THE</h3>
+<p>En inglés existen <strong>artículos indefinidos</strong> (a/an) y <strong>definido</strong> (the).</p>
+<div class="vocab-grid">
+${VC('A','Antes de consonante: a car, a dog','','a car, a dog')}
+${VC('AN','Antes de vocal: an apple, an egg','','an apple, an egg')}
+${VC('THE','El/La/Los/Las (específico)','','the car, the sun')}
+</div>
+<p><strong>Reglas:</strong></p>
+<div class="vocab-grid">
+${VC('A book','Un libro (cualquiera)','','a book')}${VC('The book','El libro (ese específico)','','the book')}
+${VC('An umbrella','Un paraguas','','an umbrella')}${VC('An hour','Una hora (h muda)','','an hour')}
+${VC('The moon','La luna (única)','','the moon')}${VC('The president','El presidente','','the president')}
+</div>
+<p><strong>Sin artículo:</strong> nombres propios, idiomas, comidas en general → I eat <em>rice</em>. She speaks <em>English</em>.</p>
+${Q('q10a1','¿Cuál es correcto?',['A orange','An orange','The orange (por primera vez)','An naranja'],1)}`;
+
+// LECCIÓN 11: Sustantivos
+STATIC_CONTENT[11] = () => `
+<h3>📚 Sustantivos: Singular y Plural</h3>
+<p>La mayoría de plurales en inglés se forman agregando <strong>-S</strong> o <strong>-ES</strong>.</p>
+<div class="vocab-grid">
+${VC('book → books','libro → libros','','book, books')}${VC('car → cars','carro → carros','','car, cars')}
+${VC('box → boxes','caja → cajas','','box, boxes')}${VC('bus → buses','autobús → autobuses','','bus, buses')}
+${VC('baby → babies','bebé → bebés','','baby, babies')}${VC('city → cities','ciudad → ciudades','','city, cities')}
+${VC('man → men','hombre → hombres','','man, men')}${VC('woman → women','mujer → mujeres','','woman, women')}
+${VC('child → children','niño → niños','','child, children')}${VC('tooth → teeth','diente → dientes','','tooth, teeth')}
+${VC('foot → feet','pie → pies','','foot, feet')}${VC('mouse → mice','ratón → ratones','','mouse, mice')}
+</div>
+${Q('q11a1','¿Cuál es el plural de "city"?',['Citys','Cities','Cityes','Citis'],1)}`;
+
+// LECCIÓN 12: This / That / These / Those
+STATIC_CONTENT[12] = () => `
+<h3>👉 This, That, These, Those</h3>
+<p>Se usan para señalar objetos. Dependen de la <strong>distancia</strong> y del <strong>número</strong>.</p>
+<div class="vocab-grid">
+${VC('This','Este/Esta (cerca, singular)','','This is my phone')}
+${VC('That','Ese/Aquel (lejos, singular)','','That is your car')}
+${VC('These','Estos/Estas (cerca, plural)','','These are my books')}
+${VC('Those','Esos/Aquellos (lejos, plural)','','Those are your keys')}
+</div>
+<p><strong>Ejemplos:</strong></p>
+<div class="vocab-grid">
+${VC('This is my bag.','Esta es mi bolsa.','','This is my bag')}
+${VC('That house is big.','Esa casa es grande.','','That house is big')}
+${VC('These shoes are new.','Estos zapatos son nuevos.','','These shoes are new')}
+${VC('Those people are happy.','Esas personas son felices.','','Those people are happy')}
+</div>
+${Q('q12a1','Para señalar dos libros que están lejos, uso:',['This books','That books','These books','Those books'],3)}`;
+
+// LECCIÓN 13: There is / There are
+STATIC_CONTENT[13] = () => `
+<h3>📍 There Is / There Are</h3>
+<p>Se usan para indicar <strong>existencia o presencia</strong>. Equivale a "hay" en español.</p>
+<div class="vocab-grid">
+${VC('There is','Hay (singular)','','There is a cat on the table')}
+${VC('There are','Hay (plural)','','There are three chairs')}
+${VC('There isn\'t','No hay (singular)','','There is not a problem')}
+${VC('There aren\'t','No hay (plural)','','There are not any apples')}
+${VC('Is there...?','¿Hay...? (singular)','','Is there a bank near here?')}
+${VC('Are there...?','¿Hay...? (plural)','','Are there any restaurants?')}
+</div>
+<p><strong>Contracciones:</strong> There's = There is | There're = There are</p>
+<div class="vocab-grid">
+${VC('There\'s a problem.','Hay un problema.','','There is a problem')}
+${VC('Are there any seats?','¿Hay asientos?','','Are there any seats?')}
+</div>
+${Q('q13a1','¿Cuál es correcto?',['There is two cats','There are a cat','There are two cats','There is two cats'],2)}`;
+
+// LECCIÓN 14: There was / There were
+STATIC_CONTENT[14] = () => `
+<h3>📍 There Was / There Were (Pasado)</h3>
+<p>Forma pasada de "there is/are". Indica lo que <strong>existía o había</strong> antes.</p>
+<div class="vocab-grid">
+${VC('There was','Había (singular)','','There was a big tree here')}
+${VC('There were','Había (plural)','','There were many people')}
+${VC('There wasn\'t','No había (singular)','','There was not electricity')}
+${VC('There weren\'t','No había (plural)','','There were not any stores')}
+${VC('Was there...?','¿Había...? (singular)','','Was there a hospital?')}
+${VC('Were there...?','¿Había...? (plural)','','Were there any problems?')}
+</div>
+<div class="vocab-grid">
+${VC('There was a storm last night.','Hubo una tormenta anoche.','','There was a storm last night')}
+${VC('There were 50 students.','Había 50 estudiantes.','','There were 50 students')}
+</div>
+${Q('q14a1','Ayer había muchos carros en la calle:',['There is many cars','There were many cars','There was many cars','There are many cars'],1)}`;
+
+// LECCIÓN 15: Some / Any / No
+STATIC_CONTENT[15] = () => `
+<h3>🔢 Some, Any, No</h3>
+<p>Se usan con sustantivos <strong>incontables o plurales</strong> para hablar de cantidades indefinidas.</p>
+<div class="vocab-grid">
+${VC('Some','Algo de / Unos (afirmativo)','','I have some money')}
+${VC('Any','Algo de / Ningún (negativo/pregunta)','','Is there any milk?')}
+${VC('No','Ningún (sin NOT)','','There is no time')}
+${VC('Some water','Un poco de agua','','some water')}
+${VC('Any questions?','¿Alguna pregunta?','','any questions?')}
+${VC('No problem','Ningún problema','','no problem')}
+</div>
+<p><strong>Regla general:</strong><br>✅ Afirmativo → SOME | ❓ Pregunta → ANY | ❌ Negativo → ANY o NO</p>
+${Q('q15a1','¿Cuál es correcto en pregunta?',['Do you have some coffee?','Do you have any coffee?','Do you have no coffee?','Have you some coffee?'],1)}`;
+
+// LECCIÓN 16: Palabras Derivadas
+STATIC_CONTENT[16] = () => `
+<h3>🔤 Formación de Palabras (Word Formation)</h3>
+<p>En inglés puedes crear nuevas palabras agregando <strong>prefijos y sufijos</strong>.</p>
+<div class="vocab-grid">
+${VC('un- (negación)','unhappy, unfair, unknown','','unhappy, unfair')}
+${VC('re- (repetición)','redo, rewrite, return','','redo, rewrite')}
+${VC('pre- (antes)','preview, predict, prepare','','preview, predict')}
+${VC('dis- (opuesto)','disagree, dislike, discover','','disagree, dislike')}
+${VC('-ful (lleno de)','beautiful, careful, helpful','','beautiful, helpful')}
+${VC('-less (sin)','careless, useless, homeless','','careless, useless')}
+${VC('-er/-or (persona)','teacher, driver, actor','','teacher, driver')}
+${VC('-tion/-sion (acción)','education, decision, action','','education, decision')}
+${VC('-ly (adverbio)','quickly, slowly, carefully','','quickly, slowly')}
+${VC('-ness (estado)','happiness, sadness, kindness','','happiness, sadness')}
+</div>
+${Q('q16a1','¿Qué significa "unhelpful"?','No útil / Que no ayuda','Muy útil','Super útil','Con ayuda'.split(','),0)}`;
+
+// LECCIÓN 17: How much / How many
+STATIC_CONTENT[17] = () => `
+<h3>❓ How Much / How Many</h3>
+<p>Ambas preguntan "¿cuánto/a/os/as?" pero dependen del tipo de sustantivo.</p>
+<div class="vocab-grid">
+${VC('How much?','¿Cuánto? (incontable)','','How much water do you need?')}
+${VC('How many?','¿Cuántos? (contable)','','How many apples are there?')}
+${VC('Water, money, time','Incontables — no tienen plural','','water, money, time')}
+${VC('Apples, books, cars','Contables — tienen plural','','apples, books, cars')}
+</div>
+<p><strong>Ejemplos:</strong></p>
+<div class="vocab-grid">
+${VC('How much does it cost?','¿Cuánto cuesta?','','How much does it cost?')}
+${VC('How many people are here?','¿Cuántas personas hay aquí?','','How many people are here?')}
+${VC('How much time do we have?','¿Cuánto tiempo tenemos?','','How much time do we have?')}
+${VC('How many languages do you speak?','¿Cuántos idiomas hablas?','','How many languages do you speak?')}
+</div>
+${Q('q17a1','¿Cuál es correcto?',['How many money do you have?','How much books are there?','How much money do you have?','How many water is there?'],2)}`;
+
+// LECCIÓN 18: Much / Many / A lot of
+STATIC_CONTENT[18] = () => `
+<h3>📊 Much, Many, A lot of</h3>
+<p>Las tres expresan <strong>gran cantidad</strong>, pero se usan diferente.</p>
+<div class="vocab-grid">
+${VC('Much','Mucho/a (incontable, neg/preg)','','I don\'t have much time')}
+${VC('Many','Muchos/as (contable, neg/preg)','','There aren\'t many students')}
+${VC('A lot of / Lots of','Mucho/a, muchos/as (afirmativo)','','I have a lot of friends')}
+${VC('A great deal of','Una gran cantidad de (formal)','','a great deal of money')}
+</div>
+<div class="vocab-grid">
+${VC('I don\'t have much time.','No tengo mucho tiempo.','','I don\'t have much time')}
+${VC('There are a lot of cars.','Hay muchos carros.','','There are a lot of cars')}
+${VC('She has many friends.','Ella tiene muchos amigos.','','She has many friends')}
+</div>
+${Q('q18a1','En oración afirmativa con sustantivo contable, ¿qué uso?',['Much','Many','A lot of','Few'],2)}`;
+
+// LECCIÓN 19: A little / A few
+STATIC_CONTENT[19] = () => `
+<h3>🔢 A little / A few / Little / Few</h3>
+<p>Expresan <strong>poca cantidad</strong>. La diferencia está en el tipo de sustantivo y el tono.</p>
+<div class="vocab-grid">
+${VC('A little','Un poco (incontable, positivo)','','I have a little money')}
+${VC('Little','Poco (incontable, negativo/insuficiente)','','There is little hope')}
+${VC('A few','Algunos/unos pocos (contable, positivo)','','I have a few friends')}
+${VC('Few','Pocos (contable, negativo/insuficiente)','','Few people know this')}
+</div>
+<div class="vocab-grid">
+${VC('I speak a little English.','Hablo un poco de inglés.','','I speak a little English')}
+${VC('Could you give me a few minutes?','¿Me das unos minutos?','','Could you give me a few minutes?')}
+${VC('There is little food left.','Queda poca comida (es un problema).','','There is little food left')}
+</div>
+${Q('q19a1','¿Cuál tiene sentido positivo (hay suficiente)?',['Few friends came','A few friends came','Little time remains','Few options exist'],1)}`;
+
+// LECCIÓN 20: Adjetivos
+STATIC_CONTENT[20] = () => `
+<h3>🌈 Adjetivos Descriptivos</h3>
+<p>Los adjetivos en inglés <strong>no cambian</strong> de género ni número. Van <strong>antes del sustantivo</strong>.</p>
+<div class="vocab-grid">
+${VC('Big / Small','Grande / Pequeño','','big, small')}${VC('Tall / Short','Alto / Bajo','','tall, short')}
+${VC('Fast / Slow','Rápido / Lento','','fast, slow')}${VC('Hot / Cold','Caliente / Frío','','hot, cold')}
+${VC('Old / New','Viejo / Nuevo','','old, new')}${VC('Happy / Sad','Feliz / Triste','','happy, sad')}
+${VC('Beautiful / Ugly','Hermoso / Feo','','beautiful, ugly')}${VC('Strong / Weak','Fuerte / Débil','','strong, weak')}
+${VC('Easy / Difficult','Fácil / Difícil','','easy, difficult')}${VC('Expensive / Cheap','Caro / Barato','','expensive, cheap')}
+${VC('Clean / Dirty','Limpio / Sucio','','clean, dirty')}${VC('Loud / Quiet','Ruidoso / Silencioso','','loud, quiet')}
+</div>
+<p><strong>Orden:</strong> Opinion → Size → Age → Color → Origin → Material + Noun</p>
+${Q('q20a1','¿Cuál es el orden correcto?',['A Italian beautiful car','A beautiful Italian car','A Italian car beautiful','Beautiful a Italian car'],1)}`;
+
+// LECCIÓN 21: Adjetivos Posesivos
+STATIC_CONTENT[21] = () => `
+<h3>📌 Adjetivos Posesivos</h3>
+<p>Indican a quién pertenece algo. Van <strong>antes del sustantivo</strong>.</p>
+<div class="vocab-grid">
+${VC('My','Mi / Mis','','my book, my friends')}${VC('Your','Tu / Tus / Su (usted)','','your phone, your ideas')}
+${VC('His','Su (de él)','','his car, his name')}${VC('Her','Su (de ella)','','her bag, her sister')}
+${VC('Its','Su (de ello)','','its color, its name')}${VC('Our','Nuestro/a/os/as','','our house, our plans')}
+${VC('Their','Su / Sus (de ellos)','','their children, their work')}
+</div>
+<p><strong>Pronombres posesivos (solos, sin sustantivo):</strong> mine, yours, his, hers, ours, theirs</p>
+<div class="vocab-grid">
+${VC('This is my car.','Este es mi carro.','','This is my car')}
+${VC('Is this yours?','¿Esto es tuyo?','','Is this yours?')}
+</div>
+${Q('q21a1','¿Cuál es correcto?',['This is she bag','This is her bag','This is hers bag','This is his bag (de ella)'],1)}`;
+
+// LECCIÓN 23: Preguntas WH-
+STATIC_CONTENT[23] = () => `
+<h3>❓ Preguntas WH- (Question Words)</h3>
+<p>Las preguntas WH- piden <strong>información específica</strong>, no solo sí/no.</p>
+<div class="vocab-grid">
+${VC('What','Qué / Cuál','','What is your name?')}${VC('Who','Quién','','Who is that woman?')}
+${VC('Where','Dónde','','Where do you live?')}${VC('When','Cuándo','','When is your birthday?')}
+${VC('Why','Por qué','','Why are you late?')}${VC('How','Cómo','','How are you?')}
+${VC('Which','Cuál (de varios)','','Which one do you prefer?')}${VC('Whose','De quién','','Whose bag is this?')}
+${VC('How many','Cuántos','','How many sisters do you have?')}${VC('How much','Cuánto','','How much does it cost?')}
+${VC('How long','Cuánto tiempo','','How long have you been here?')}${VC('How far','Qué tan lejos','','How far is the airport?')}
+</div>
+${Q('q23a1','¿Qué pregunta usas para pedir el lugar?',['What','Who','Where','When'],2)}`;
+
+// LECCIÓN 24: Adverbios de Frecuencia
+STATIC_CONTENT[24] = () => `
+<h3>🔄 Adverbios de Frecuencia</h3>
+<p>Indican <strong>con qué frecuencia</strong> ocurre algo. Van antes del verbo principal, pero después de TO BE.</p>
+<div class="vocab-grid">
+${VC('Always (100%)','Siempre','','I always brush my teeth')}
+${VC('Usually (80%)','Generalmente','','She usually arrives early')}
+${VC('Often (60%)','A menudo, frecuentemente','','We often go to the gym')}
+${VC('Sometimes (40%)','A veces','','I sometimes eat fast food')}
+${VC('Rarely (20%)','Raramente','','He rarely drinks coffee')}
+${VC('Never (0%)','Nunca','','They never smoke')}
+${VC('Every day','Todos los días','','I exercise every day')}
+${VC('Once a week','Una vez a la semana','','once a week')}
+</div>
+<p><strong>Posición:</strong> She <em>always</em> works hard. He is <em>never</em> late.</p>
+${Q('q24a1','¿Dónde va el adverbio de frecuencia?',['Al final de la oración siempre','Antes del verbo principal (o después de TO BE)','Solo al principio','Solo al final'],1)}`;
+
+// LECCIÓN 25: Preposiciones de Lugar
+STATIC_CONTENT[25] = () => `
+<h3>📍 Preposiciones de Lugar</h3>
+<p>Indican la <strong>posición o ubicación</strong> de algo o alguien.</p>
+<div class="vocab-grid">
+${VC('In','Dentro de, en','','The cat is in the box')}${VC('On','Sobre, encima (contacto)','','The book is on the table')}
+${VC('At','En (lugar específico o punto)','','I\'m at the office')}${VC('Under','Debajo de','','under the chair')}
+${VC('Above / Over','Encima de (sin contacto)','','above the clouds')}${VC('Below','Debajo, por debajo','','below zero')}
+${VC('Next to / Beside','Al lado de','','next to the door')}${VC('Between','Entre (dos)','','between the two buildings')}
+${VC('Among','Entre (varios)','','among the students')}${VC('In front of','Frente a, delante de','','in front of the school')}
+${VC('Behind','Detrás de','','behind the house')}${VC('Near / Close to','Cerca de','','near the park')}
+</div>
+${Q('q25a1','¿Cuál usas para "el gato está dentro de la caja"?',['on','at','in','under'],2)}`;
+
+// LECCIÓN 26: Preposiciones de Tiempo
+STATIC_CONTENT[26] = () => `
+<h3>⏰ Preposiciones de Tiempo: IN, ON, AT</h3>
+<p>Las tres se traducen como "en" pero se usan con períodos diferentes.</p>
+<div class="vocab-grid">
+${VC('AT + hora/momento específico','at 3pm, at noon, at night','','at three o clock, at noon')}
+${VC('ON + día/fecha','on Monday, on July 4th','','on Monday, on July fourth')}
+${VC('IN + período largo','in June, in 2024, in the morning','','in June, in the morning')}
+${VC('In the morning','Por la mañana','','in the morning')}${VC('In the afternoon','Por la tarde','','in the afternoon')}
+${VC('At night','De noche','','at night')}${VC('On weekends','Los fines de semana','','on weekends')}
+${VC('In winter','En invierno','','in winter')}${VC('At Christmas','En Navidad','','at Christmas')}
+</div>
+<p><strong>Regla:</strong> AT (preciso) → ON (días) → IN (períodos)</p>
+${Q('q26a1','¿Cuál es correcto?',['I was born in Monday','I was born at Monday','I was born on Monday','I was born on 1990'],2)}`;
+
+// LECCIÓN 27: Can / Can't
+STATIC_CONTENT[27] = () => `
+<h3>💪 Can / Can't — Habilidad y Permiso</h3>
+<p><strong>CAN</strong> es un verbo modal. Expresa habilidad, permiso o posibilidad. <strong>Nunca lleva -s ni TO</strong>.</p>
+<div class="vocab-grid">
+${VC('Can','Poder, saber (habilidad)','','I can swim')}${VC('Can\'t / Cannot','No poder','','She can\'t drive')}
+${VC('Can I...?','¿Puedo...? (permiso)','','Can I open the window?')}
+${VC('Can you...?','¿Puedes...? (petición)','','Can you help me?')}
+</div>
+<div class="vocab-grid">
+${VC('I can speak three languages.','Puedo hablar tres idiomas.','','I can speak three languages')}
+${VC('He can\'t play the piano.','Él no sabe tocar el piano.','','He cannot play the piano')}
+${VC('Can you swim?','¿Sabes nadar?','','Can you swim?')}
+${VC('You can use my phone.','Puedes usar mi teléfono.','','You can use my phone')}
+</div>
+${Q('q27a1','¿Cuál es la forma correcta?',['She cans sing','She can sings','She can sing','She can to sing'],2)}`;
+
+// LECCIÓN 28: Like + ING
+STATIC_CONTENT[28] = () => `
+<h3>❤️ Like, Love, Hate + ING</h3>
+<p>Verbos como LIKE, LOVE, ENJOY, HATE y PREFER van seguidos de <strong>verbo + ING</strong>.</p>
+<div class="vocab-grid">
+${VC('Like + ING','Gustar','','I like reading books')}${VC('Love + ING','Encantar','','She loves dancing')}
+${VC('Enjoy + ING','Disfrutar','','We enjoy cooking')}${VC('Hate + ING','Odiar','','He hates waiting')}
+${VC('Prefer + ING','Preferir','','I prefer walking to driving')}${VC('Don\'t mind + ING','No importar','','I don\'t mind working late')}
+${VC('Can\'t stand + ING','No soportar','','She can\'t stand lying')}${VC('Keep + ING','Seguir haciendo','','Keep trying!')}
+</div>
+<div class="vocab-grid">
+${VC('Do you like swimming?','¿Te gusta nadar?','','Do you like swimming?')}
+${VC('I love listening to music.','Me encanta escuchar música.','','I love listening to music')}
+</div>
+${Q('q28a1','¿Cuál es correcto?',['I like to swim (también válido)','I like swimming','Both are correct','Solo a es correcto'],2)}`;
+
+// LECCIÓN 29: Want / Need / Would like
+STATIC_CONTENT[29] = () => `
+<h3>🙏 Want, Need, Would like</h3>
+<p>Expresan deseos y necesidades. Van seguidos de <strong>TO + infinitivo</strong> o sustantivo.</p>
+<div class="vocab-grid">
+${VC('Want to','Querer (casual)','','I want to go home')}${VC('Need to','Necesitar','','She needs to rest')}
+${VC('Would like to','Quisiera (formal/cortés)','','I would like to speak with you')}
+${VC('Want + noun','Querer algo','','I want a coffee')}${VC('Need + noun','Necesitar algo','','We need help')}
+${VC('Would like + noun','Quisiera algo','','I would like a table for two')}
+</div>
+<p><strong>Negaciones:</strong> I don't want to / I don't need to / I wouldn't like to</p>
+<div class="vocab-grid">
+${VC('I\'d like a glass of water.','Quisiera un vaso de agua.','','I would like a glass of water')}
+${VC('Do you want to come?','¿Quieres venir?','','Do you want to come?')}
+</div>
+${Q('q29a1','Forma más cortés de pedir algo en un restaurante:',['I want a coffee','Give me a coffee','I would like a coffee, please','I need a coffee'],2)}`;
+
+// LECCIÓN 30: Vocabulario - El Hogar
+STATIC_CONTENT[30] = () => `
+<h3>🏠 El Hogar — Rooms and Furniture</h3>
+<p>Vocabulario esencial para describir tu casa.</p>
+<div class="vocab-grid">
+${VC('Living room','Sala de estar','','living room')}${VC('Bedroom','Dormitorio, habitación','','bedroom')}
+${VC('Kitchen','Cocina','','kitchen')}${VC('Bathroom','Baño','','bathroom')}
+${VC('Dining room','Comedor','','dining room')}${VC('Garage','Garaje','','garage')}
+${VC('Sofa / Couch','Sofá','','sofa')}${VC('Table','Mesa','','table')}
+${VC('Chair','Silla','','chair')}${VC('Bed','Cama','','bed')}
+${VC('Refrigerator','Nevera, refrigerador','','refrigerator')}${VC('Stove / Oven','Estufa / Horno','','stove, oven')}
+${VC('Sink','Lavamanos, fregadero','','sink')}${VC('Lamp','Lámpara','','lamp')}
+${VC('Window','Ventana','','window')}${VC('Door','Puerta','','door')}
+</div>
+${Q('q30a1','¿Dónde duermes?',['In the kitchen','In the living room','In the bedroom','In the garage'],2)}`;
+
+// LECCIÓN 31: La Familia
+STATIC_CONTENT[31] = () => `
+<h3>👨‍👩‍👧‍👦 La Familia — Family Members</h3>
+<div class="vocab-grid">
+${VC('Father / Dad','Padre / Papá','','father, dad')}${VC('Mother / Mom','Madre / Mamá','','mother, mom')}
+${VC('Brother','Hermano','','brother')}${VC('Sister','Hermana','','sister')}
+${VC('Son','Hijo','','son')}${VC('Daughter','Hija','','daughter')}
+${VC('Grandfather','Abuelo','','grandfather')}${VC('Grandmother','Abuela','','grandmother')}
+${VC('Uncle','Tío','','uncle')}${VC('Aunt','Tía','','aunt')}
+${VC('Cousin','Primo/a','','cousin')}${VC('Nephew','Sobrino','','nephew')}
+${VC('Niece','Sobrina','','niece')}${VC('Husband','Esposo, marido','','husband')}
+${VC('Wife','Esposa','','wife')}${VC('In-laws','Suegros / Familia política','','in-laws')}
+</div>
+<div class="vocab-grid">
+${VC('I have two brothers and one sister.','Tengo dos hermanos y una hermana.','','I have two brothers and one sister')}
+${VC('My grandparents live far away.','Mis abuelos viven lejos.','','My grandparents live far away')}
+</div>
+${Q('q31a1','¿Cómo se dice "sobrina" en inglés?',['Nephew','Niece','Cousin','Aunt'],1)}`;
+
+// LECCIÓN 32: El Cuerpo Humano
+STATIC_CONTENT[32] = () => `
+<h3>💪 El Cuerpo Humano — The Human Body</h3>
+<div class="vocab-grid">
+${VC('Head','Cabeza','','head')}${VC('Hair','Cabello, pelo','','hair')}
+${VC('Face','Cara, rostro','','face')}${VC('Eyes','Ojos','','eyes')}
+${VC('Nose','Nariz','','nose')}${VC('Mouth','Boca','','mouth')}
+${VC('Ears','Orejas','','ears')}${VC('Neck','Cuello','','neck')}
+${VC('Shoulder','Hombro','','shoulder')}${VC('Arm','Brazo','','arm')}
+${VC('Hand','Mano','','hand')}${VC('Finger','Dedo (mano)','','finger')}
+${VC('Chest','Pecho','','chest')}${VC('Stomach','Estómago, barriga','','stomach')}
+${VC('Leg','Pierna','','leg')}${VC('Knee','Rodilla','','knee')}
+${VC('Foot / Feet','Pie / Pies','','foot, feet')}${VC('Toe','Dedo (pie)','','toe')}
+</div>
+${Q('q32a1','¿Cuál es el plural de "foot"?',['Foots','Feets','Feet','Foot'],2)}`;
+
+// LECCIÓN 33: La Ropa
+STATIC_CONTENT[33] = () => `
+<h3>👕 La Ropa y Accesorios — Clothes</h3>
+<div class="vocab-grid">
+${VC('Shirt','Camisa','','shirt')}${VC('T-shirt','Camiseta','','t-shirt')}
+${VC('Pants / Trousers','Pantalón','','pants')}${VC('Jeans','Jeans, vaqueros','','jeans')}
+${VC('Dress','Vestido','','dress')}${VC('Skirt','Falda','','skirt')}
+${VC('Jacket','Chaqueta','','jacket')}${VC('Coat','Abrigo','','coat')}
+${VC('Shoes','Zapatos','','shoes')}${VC('Sneakers / Trainers','Tenis, zapatillas','','sneakers')}
+${VC('Socks','Calcetines, medias','','socks')}${VC('Hat','Sombrero, gorra','','hat')}
+${VC('Tie','Corbata','','tie')}${VC('Suit','Traje, terno','','suit')}
+${VC('Scarf','Bufanda','','scarf')}${VC('Gloves','Guantes','','gloves')}
+</div>
+<p><strong>Verbos:</strong> wear (llevar puesto), put on (ponerse), take off (quitarse)</p>
+${Q('q33a1','¿Cómo se dice "calcetines"?',['Shoes','Socks','Gloves','Boots'],1)}`;
+
+// LECCIÓN 34: Comida y Bebidas
+STATIC_CONTENT[34] = () => `
+<h3>🍎 Comida y Bebidas — Food and Drinks</h3>
+<div class="vocab-grid">
+${VC('Breakfast','Desayuno','','breakfast')}${VC('Lunch','Almuerzo','','lunch')}
+${VC('Dinner / Supper','Cena','','dinner')}${VC('Snack','Merienda, bocado','','snack')}
+${VC('Apple','Manzana','','apple')}${VC('Banana','Banana, plátano','','banana')}
+${VC('Rice','Arroz','','rice')}${VC('Bread','Pan','','bread')}
+${VC('Chicken','Pollo','','chicken')}${VC('Fish','Pescado/pez','','fish')}
+${VC('Vegetables','Verduras, vegetales','','vegetables')}${VC('Soup','Sopa','','soup')}
+${VC('Water','Agua','','water')}${VC('Coffee','Café','','coffee')}
+${VC('Tea','Té','','tea')}${VC('Juice','Jugo, zumo','','juice')}
+</div>
+<p><strong>Frases útiles:</strong></p>
+<div class="vocab-grid">
+${VC('I\'m hungry / thirsty.','Tengo hambre / sed.','','I am hungry. I am thirsty')}
+${VC('What would you like?','¿Qué desearía?','','What would you like?')}
+</div>
+${Q('q34a1','¿Cuál es la comida de la mañana?',['Lunch','Dinner','Breakfast','Supper'],2)}`;
+
+// LECCIÓN 35: Animales y Naturaleza
+STATIC_CONTENT[35] = () => `
+<h3>🐾 Animales y Naturaleza</h3>
+<div class="vocab-grid">
+${VC('Dog','Perro','','dog')}${VC('Cat','Gato','','cat')}
+${VC('Bird','Pájaro, ave','','bird')}${VC('Fish','Pez','','fish')}
+${VC('Horse','Caballo','','horse')}${VC('Cow','Vaca','','cow')}
+${VC('Lion','León','','lion')}${VC('Tiger','Tigre','','tiger')}
+${VC('Elephant','Elefante','','elephant')}${VC('Monkey','Mono','','monkey')}
+${VC('Tree','Árbol','','tree')}${VC('Flower','Flor','','flower')}
+${VC('Mountain','Montaña','','mountain')}${VC('River','Río','','river')}
+${VC('Ocean / Sea','Océano / Mar','','ocean, sea')}${VC('Forest','Bosque','','forest')}
+</div>
+${Q('q35a1','¿Cuál es un animal doméstico?',['Lion','Tiger','Dog','Elephant'],2)}`;
+
+// LECCIÓN 36: Repaso Básico
+STATIC_CONTENT[36] = () => `
+<h3>🔁 Repaso Completo — Nivel Básico</h3>
+<p>¡Repasemos todo lo del nivel básico! Este es un resumen de los puntos más importantes.</p>
+<div class="vocab-grid">
+${VC('TO BE: I am, You are, He/She/It is...','Ser / Estar','','I am happy. She is a doctor')}
+${VC('Presente Simple: I work / She works','Hábitos y rutinas','','I work every day')}
+${VC('Can: I can swim / She can\'t drive','Habilidad y permiso','','Can you help me?')}
+${VC('There is/are: There is a cat','Existencia','','There are three books')}
+${VC('Preposiciones: in, on, at, under','Lugar y tiempo','','The book is on the table')}
+${VC('Artículos: a/an (indefinido), the (definido)','Determinantes','','a car, the sun')}
+${VC('WH- questions: What, Where, When...','Preguntas de información','','Where do you live?')}
+${VC('Adjetivos: big, small, happy...','Descripción','','a big red car')}
+</div>
+${Q('q36a1','¿Cuál es correcto?',['She have a car','She has a car','She haves a car','She is have a car'],1)}
+${Q('q36b2','¿Dónde va el adverbio de frecuencia "always"?',['Always she works','She always works','She works always','Always works she'],1)}`;
+
+// LECCIÓN 37: Los Deportes
+STATIC_CONTENT[37] = () => `
+<h3>⚽ Los Deportes — Sports</h3>
+<p><strong>Play</strong> (deportes de equipo/raqueta) | <strong>Go</strong> (actividades -ing) | <strong>Do</strong> (artes marciales y gimnasia)</p>
+<div class="vocab-grid">
+${VC('Football / Soccer','Fútbol','','football, soccer')}${VC('Basketball','Baloncesto','','basketball')}
+${VC('Baseball','Béisbol','','baseball')}${VC('Tennis','Tenis','','tennis')}
+${VC('Swimming','Natación','','swimming')}${VC('Running','Correr','','running')}
+${VC('Cycling','Ciclismo','','cycling')}${VC('Volleyball','Voleibol','','volleyball')}
+${VC('Boxing','Boxeo','','boxing')}${VC('Gym / Fitness','Gimnasio','','gym, fitness')}
+</div>
+<div class="vocab-grid">
+${VC('I play football on Saturdays.','Juego fútbol los sábados.','','I play football on Saturdays')}
+${VC('She goes swimming every morning.','Ella va a nadar cada mañana.','','She goes swimming every morning')}
+${VC('He does karate twice a week.','Él practica karate dos veces a la semana.','','He does karate twice a week')}
+</div>
+${Q('q37a1','¿Cuál verbo usas con "swimming"?',['Play swimming','Do swimming','Go swimming','Make swimming'],2)}`;
+
+// LECCIÓN 38: Profesiones
+STATIC_CONTENT[38] = () => `
+<h3>👩‍💼 Profesiones y Trabajos — Jobs</h3>
+<div class="vocab-grid">
+${VC('Doctor','Médico/a','','doctor')}${VC('Nurse','Enfermero/a','','nurse')}
+${VC('Teacher','Maestro/a, profesor/a','','teacher')}${VC('Engineer','Ingeniero/a','','engineer')}
+${VC('Lawyer','Abogado/a','','lawyer')}${VC('Accountant','Contador/a','','accountant')}
+${VC('Police officer','Policía','','police officer')}${VC('Firefighter','Bombero/a','','firefighter')}
+${VC('Chef / Cook','Chef / Cocinero/a','','chef, cook')}${VC('Driver','Conductor/a, chofer','','driver')}
+${VC('Journalist','Periodista','','journalist')}${VC('Architect','Arquitecto/a','','architect')}
+${VC('Programmer','Programador/a','','programmer')}${VC('Manager','Gerente, jefe/a','','manager')}
+</div>
+<p><strong>Frases:</strong> What do you do (for a living)? I'm a teacher. She works as an engineer.</p>
+${Q('q38a1','¿Cuál artículo va antes de profesión?',['I am the teacher','I am a teacher','I am teacher','I\'m an teacher'],1)}`;
+
+// LECCIÓN 39: Medios de Transporte
+STATIC_CONTENT[39] = () => `
+<h3>🚗 Medios de Transporte — Transport</h3>
+<div class="vocab-grid">
+${VC('Car','Carro, auto','','car')}${VC('Bus','Autobús, bus','','bus')}
+${VC('Train','Tren','','train')}${VC('Subway / Metro','Metro, subterráneo','','subway, metro')}
+${VC('Airplane / Plane','Avión','','airplane')}${VC('Bicycle / Bike','Bicicleta','','bicycle, bike')}
+${VC('Motorcycle','Motocicleta','','motorcycle')}${VC('Taxi','Taxi','','taxi')}
+${VC('Ship / Boat','Barco / Bote','','ship, boat')}${VC('Helicopter','Helicóptero','','helicopter')}
+</div>
+<p><strong>Preposiciones:</strong> I go <em>by</em> car. / I take <em>the</em> bus. / I ride <em>a</em> bike.</p>
+<div class="vocab-grid">
+${VC('How do you get to work?','¿Cómo llegas al trabajo?','','How do you get to work?')}
+${VC('I take the bus to school.','Tomo el autobús al colegio.','','I take the bus to school')}
+</div>
+${Q('q39a1','¿Cómo dices que vas en carro?',['I go with car','I go in car','I go by car','I go on car'],2)}`;
+
+// LECCIÓN 40: Tecnología
+STATIC_CONTENT[40] = () => `
+<h3>💻 Tecnología y Gadgets</h3>
+<div class="vocab-grid">
+${VC('Smartphone / Phone','Teléfono inteligente','','smartphone')}${VC('Laptop','Portátil, laptop','','laptop')}
+${VC('Computer','Computadora, ordenador','','computer')}${VC('Tablet','Tableta','','tablet')}
+${VC('Internet','Internet','','internet')}${VC('Wi-Fi','Wi-Fi, red inalámbrica','','wi-fi')}
+${VC('App','Aplicación','','app')}${VC('Social media','Redes sociales','','social media')}
+${VC('Email','Correo electrónico','','email')}${VC('Password','Contraseña','','password')}
+${VC('Download / Upload','Descargar / Subir','','download, upload')}${VC('Charger','Cargador','','charger')}
+${VC('Screen','Pantalla','','screen')}${VC('Battery','Batería','','battery')}
+</div>
+${Q('q40a1','¿Cómo se dice "contraseña"?',['Username','Password','Email','Profile'],1)}`;
+
+// LECCIÓN 43: Verbos Irregulares
+STATIC_CONTENT[43] = () => `
+<h3>📋 Verbos Irregulares Esenciales</h3>
+<p>Estos verbos <strong>no siguen las reglas</strong> del pasado regular (-ED). ¡Hay que memorizarlos!</p>
+<div class="vocab-grid">
+${VC('go → went → gone','ir','','I went to the store')}
+${VC('come → came → come','venir','','She came home late')}
+${VC('have → had → had','tener','','We had a great time')}
+${VC('see → saw → seen','ver','','I saw a movie yesterday')}
+${VC('say → said → said','decir','','He said goodbye')}
+${VC('get → got → got/gotten','obtener, llegar','','I got your message')}
+${VC('make → made → made','hacer, fabricar','','She made dinner')}
+${VC('know → knew → known','saber, conocer','','I knew the answer')}
+${VC('take → took → taken','tomar, llevar','','They took the bus')}
+${VC('think → thought → thought','pensar','','I thought you left')}
+${VC('give → gave → given','dar','','He gave me a gift')}
+${VC('find → found → found','encontrar','','I found my keys')}
+</div>
+${Q('q43a1','¿Cuál es el pasado de "go"?',['Goed','Goes','Went','Gone'],2)}`;
+
+// LECCIÓN 44: Pasado Continuo
+STATIC_CONTENT[44] = () => `
+<h3>📝 Pasado Continuo (Past Continuous)</h3>
+<p>Se forma con <strong>WAS/WERE + verbo + ING</strong>. Describe acciones en progreso en un momento del pasado.</p>
+<div class="vocab-grid">
+${VC('I / He / She / It was working','Estaba trabajando','','I was working all morning')}
+${VC('You / We / They were studying','Estaban estudiando','','They were studying last night')}
+</div>
+<p><strong>Usos principales:</strong></p>
+<div class="vocab-grid">
+${VC('Acción interrumpida','I was sleeping when he called.','','I was sleeping when he called')}
+${VC('Dos acciones simultáneas','She was cooking while I was cleaning.','','She was cooking while I was cleaning')}
+${VC('Escena de fondo','It was raining when we arrived.','','It was raining when we arrived')}
+</div>
+<p><strong>Palabras clave:</strong> when, while, at that moment, at 8pm yesterday</p>
+${Q('q44a1','¿Cuál es correcto?',['I were working','I was work','I was working','I working'],2)}`;
+
+// LECCIÓN 45: Futuro con WILL
+STATIC_CONTENT[45] = () => `
+<h3>🔮 Futuro con WILL</h3>
+<p>WILL se usa para predicciones, decisiones espontáneas y promesas.</p>
+<div class="vocab-grid">
+${VC('will + verbo','Futuro (todos los sujetos)','','I will call you tomorrow')}
+${VC('won\'t = will not','Negación','','She won\'t be there')}
+${VC('Will you...?','¿...rás? / ¿Quieres...?','','Will you help me?')}
+</div>
+<div class="vocab-grid">
+${VC('Predicción','It will rain tomorrow.','','It will rain tomorrow')}
+${VC('Decisión espontánea','I\'ll have the salad.','','I will have the salad')}
+${VC('Promesa','I\'ll always love you.','','I will always love you')}
+${VC('Oferta','I\'ll carry that for you.','','I will carry that for you')}
+</div>
+<p><strong>Contracción:</strong> I'll, you'll, he'll, she'll, we'll, they'll</p>
+${Q('q45a1','¿Para qué NO se usa WILL?',['Predicciones','Planes ya organizados','Promesas','Decisiones espontáneas'],1)}`;
+
+// LECCIÓN 46: Futuro con GOING TO
+STATIC_CONTENT[46] = () => `
+<h3>📅 Futuro con GOING TO</h3>
+<p>Se usa para <strong>planes e intenciones</strong> y <strong>predicciones con evidencia presente</strong>.</p>
+<div class="vocab-grid">
+${VC('am/is/are going to + verbo','Plan o intención','','I am going to travel next month')}
+${VC('am/is/are not going to','Negación','','She is not going to come')}
+${VC('Are you going to...?','¿Vas a...?','','Are you going to study tonight?')}
+</div>
+<div class="vocab-grid">
+${VC('Plan:','I\'m going to start a new job next week.','','I am going to start a new job next week')}
+${VC('Evidencia:','Look at those clouds — it\'s going to rain!','','Look at those clouds, it is going to rain')}
+</div>
+<p><strong>Diferencia con WILL:</strong> Going to = ya decidido | Will = decisión en el momento</p>
+${Q('q46a1','Tienes boleto comprado para viajar. ¿Qué usas?',['I will travel','I am going to travel','I travel','I would travel'],1)}`;
+
+// LECCIÓN 47: Presente Perfecto
+STATIC_CONTENT[47] = () => `
+<h3>✅ Presente Perfecto (Present Perfect)</h3>
+<p>Se forma con <strong>HAVE/HAS + participio pasado</strong>. Conecta el pasado con el presente.</p>
+<div class="vocab-grid">
+${VC('I/You/We/They have + PP','Presente perfecto','','I have finished my work')}
+${VC('He/She/It has + PP','Presente perfecto 3ª persona','','She has visited Paris')}
+${VC('Haven\'t / Hasn\'t','Negación','','He hasn\'t called yet')}
+</div>
+<p><strong>Usos:</strong></p>
+<div class="vocab-grid">
+${VC('Experiencia de vida','Have you ever been to London?','','Have you ever been to London?')}
+${VC('Acción reciente','I\'ve just had lunch.','','I have just had lunch')}
+${VC('Duración hasta ahora','She has lived here for 10 years.','','She has lived here for ten years')}
+${VC('Resultado presente','I\'ve lost my keys! (no puedo entrar)','','I have lost my keys')}
+</div>
+${Q('q47a1','¿Cuál es correcto en presente perfecto?',['I have went','I have gone','I has gone','I went'],1)}`;
+
+// LECCIÓN 48: For / Since
+STATIC_CONTENT[48] = () => `
+<h3>⏱️ For / Since con Presente Perfecto</h3>
+<p><strong>FOR</strong> indica duración. <strong>SINCE</strong> indica punto de inicio.</p>
+<div class="vocab-grid">
+${VC('FOR + período','for two hours, for years, for a long time','','for two hours')}
+${VC('SINCE + punto de inicio','since 2020, since Monday, since I was a child','','since 2020')}
+</div>
+<div class="vocab-grid">
+${VC('I\'ve worked here for 5 years.','Trabajo aquí desde hace 5 años.','','I have worked here for five years')}
+${VC('She\'s been sick since Monday.','Está enferma desde el lunes.','','She has been sick since Monday')}
+${VC('We\'ve known each other for a long time.','Nos conocemos desde hace mucho.','','We have known each other for a long time')}
+${VC('He\'s lived in London since 2018.','Vive en Londres desde 2018.','','He has lived in London since 2018')}
+</div>
+${Q('q48a1','¿Cuál es correcto?',['I\'ve lived here since 3 years','I\'ve lived here for 2019','I\'ve lived here for 3 years','I\'ve lived here since 3 years ago'],2)}`;
+
+// LECCIÓN 49: Already / Yet / Just
+STATIC_CONTENT[49] = () => `
+<h3>⚡ Already, Yet, Just, Still</h3>
+<p>Se usan con el <strong>presente perfecto</strong> y tienen posiciones específicas.</p>
+<div class="vocab-grid">
+${VC('Already','Ya (afirmativo, antes esperado)','','I\'ve already eaten')}
+${VC('Yet','Todavía / Ya (negativo o pregunta)','','I haven\'t finished yet')}
+${VC('Just','Justo, acabar de (hace poco)','','She\'s just arrived')}
+${VC('Still','Todavía, aún (en curso)','','I\'m still waiting')}
+</div>
+<div class="vocab-grid">
+${VC('Have you finished yet?','¿Ya terminaste?','','Have you finished yet?')}
+${VC('I\'ve already seen that film.','Ya vi esa película.','','I have already seen that film')}
+${VC('He\'s just left the office.','Acaba de salir de la oficina.','','He has just left the office')}
+${VC('Are you still here?','¿Todavía estás aquí?','','Are you still here?')}
+</div>
+${Q('q49a1','¿Cuál significa "acabo de comer"?',['I\'ve eaten already','I\'ve just eaten','I haven\'t eaten yet','I\'ve still eaten'],1)}`;
+
+// LECCIÓN 50: Modales I
+STATIC_CONTENT[50] = () => `
+<h3>🔧 Verbos Modales I: Must, Should, Could</h3>
+<p>Los modales expresan <strong>obligación, consejo o posibilidad</strong>. No llevan -s ni TO.</p>
+<div class="vocab-grid">
+${VC('Must','Deber (obligación fuerte)','','You must wear a seatbelt')}
+${VC('Mustn\'t','No deber (prohibición)','','You mustn\'t smoke here')}
+${VC('Should','Debería (consejo)','','You should drink more water')}
+${VC('Shouldn\'t','No debería (consejo negativo)','','You shouldn\'t stay up late')}
+${VC('Could','Podría (posibilidad, pasado de can)','','Could you pass the salt?')}
+${VC('Couldn\'t','No podía/podría','','I couldn\'t sleep last night')}
+</div>
+<div class="vocab-grid">
+${VC('I must finish this report today.','Debo terminar este informe hoy.','','I must finish this report today')}
+${VC('You should see a doctor.','Deberías ver un médico.','','You should see a doctor')}
+${VC('Could you help me?','¿Podría ayudarme?','','Could you help me?')}
+</div>
+${Q('q50a1','Para dar un consejo amistoso, ¿qué usas?',['Must','Mustn\'t','Should','Could'],2)}`;
+
+// LECCIÓN 51: Modales II
+STATIC_CONTENT[51] = () => `
+<h3>🔧 Verbos Modales II: May, Might, Would</h3>
+<div class="vocab-grid">
+${VC('May','Puede que / Se puede (permiso formal)','','May I come in?')}
+${VC('Might','Podría, quizás (menos certeza)','','It might rain tomorrow')}
+${VC('Would','Condicional, petición cortés','','Would you like some tea?')}
+${VC('Wouldn\'t','No haría, no querría','','I wouldn\'t do that')}
+</div>
+<div class="vocab-grid">
+${VC('May I use the bathroom?','¿Puedo usar el baño?','','May I use the bathroom?')}
+${VC('She might be late.','Quizás llegue tarde.','','She might be late')}
+${VC('I might go to the party.','Puede que vaya a la fiesta.','','I might go to the party')}
+${VC('Would you mind closing the door?','¿Le importaría cerrar la puerta?','','Would you mind closing the door?')}
+</div>
+${Q('q51a1','¿Cuál es más formal para pedir permiso?',['Can I leave?','May I leave?','Could I leave?','Must I leave?'],1)}`;
+
+// LECCIÓN 52: Comparativos
+STATIC_CONTENT[52] = () => `
+<h3>📊 Comparativos</h3>
+<p>Se usan para comparar dos cosas. Reglas según la longitud del adjetivo.</p>
+<div class="vocab-grid">
+${VC('Adj corto + ER + than','bigger than, taller than, older than','','bigger than, taller than')}
+${VC('More + adj largo + than','more expensive than, more beautiful','','more expensive than')}
+${VC('As + adj + as','tan ... como (igual)','','as tall as, as fast as')}
+${VC('Not as + adj + as','no tan ... como','','not as big as')}
+</div>
+<div class="vocab-grid">
+${VC('A car is faster than a bike.','Un carro es más rápido que una bicicleta.','','A car is faster than a bike')}
+${VC('This hotel is more expensive than that one.','Este hotel es más caro que ese.','','This hotel is more expensive than that one')}
+${VC('She\'s as tall as her brother.','Ella es tan alta como su hermano.','','She is as tall as her brother')}
+</div>
+<p><strong>Irregulares:</strong> good → better | bad → worse | far → further</p>
+${Q('q52a1','¿Cuál es el comparativo de "good"?',['Gooder','More good','Better','Best'],2)}`;
+
+// LECCIÓN 53: Superlativos
+STATIC_CONTENT[53] = () => `
+<h3>🏆 Superlativos</h3>
+<p>Expresan el grado máximo. Se forman con <strong>THE + adj + EST</strong> o <strong>THE MOST</strong>.</p>
+<div class="vocab-grid">
+${VC('The + adj corto + EST','the biggest, the tallest, the oldest','','the biggest, the tallest')}
+${VC('The most + adj largo','the most expensive, the most beautiful','','the most expensive')}
+${VC('The least + adj','el/la menos...','','the least interesting')}
+</div>
+<div class="vocab-grid">
+${VC('Mount Everest is the highest mountain.','El Everest es la montaña más alta.','','Mount Everest is the highest mountain')}
+${VC('This is the most expensive restaurant.','Este es el restaurante más caro.','','This is the most expensive restaurant')}
+${VC('She\'s the best student in the class.','Ella es la mejor estudiante de la clase.','','She is the best student in the class')}
+</div>
+<p><strong>Irregulares:</strong> good → the best | bad → the worst | far → the furthest</p>
+${Q('q53a1','¿Cuál es el superlativo de "bad"?',['The baddest','The most bad','The worst','The badest'],2)}`;
+
+// LECCIÓN 54: Too / Enough
+STATIC_CONTENT[54] = () => `
+<h3>⚖️ Too / Enough</h3>
+<p><strong>TOO</strong> = demasiado (exceso, problema) | <strong>ENOUGH</strong> = suficiente</p>
+<div class="vocab-grid">
+${VC('Too + adj/adv','demasiado','','It\'s too cold to swim')}
+${VC('Too much + incontable','demasiado','','There\'s too much noise')}
+${VC('Too many + contable','demasiados','','There are too many people')}
+${VC('Adj/adv + enough','suficientemente','','She\'s old enough to vote')}
+${VC('Enough + noun','suficiente cantidad de','','We don\'t have enough time')}
+${VC('Not enough','no suficiente','','I\'m not tall enough')}
+</div>
+<div class="vocab-grid">
+${VC('This coffee is too hot to drink.','Este café está demasiado caliente para tomar.','','This coffee is too hot to drink')}
+${VC('Is there enough food for everyone?','¿Hay suficiente comida para todos?','','Is there enough food for everyone?')}
+</div>
+${Q('q54a1','¿Cuál es correcto?',['He is too young enough','He is enough young','He isn\'t old enough','He is too enough old'],2)}`;
+
+// LECCIÓN 55: So / Neither
+STATIC_CONTENT[55] = () => `
+<h3>🤝 So / Neither — Acuerdo</h3>
+<p>Para expresar <strong>acuerdo</strong> con lo que dijo alguien.</p>
+<div class="vocab-grid">
+${VC('So + aux + sujeto','También (afirmativo)','','So do I, So am I, So can she')}
+${VC('Neither + aux + sujeto','Tampoco (negativo)','','Neither do I, Neither can he')}
+</div>
+<div class="vocab-grid">
+${VC('I\'m tired. — So am I.','Estoy cansado. — Yo también.','','I am tired. So am I.')}
+${VC('She can swim. — So can he.','Ella sabe nadar. — Él también.','','She can swim. So can he.')}
+${VC('I don\'t like coffee. — Neither do I.','No me gusta el café. — A mí tampoco.','','I don\'t like coffee. Neither do I.')}
+${VC('He wasn\'t there. — Neither was she.','Él no estaba. — Ella tampoco.','','He was not there. Neither was she.')}
+</div>
+${Q('q55a1','"I love chocolate." Responde que tú también:',['So I do','So do I','Neither do I','So love I'],1)}`;
+
+// LECCIÓN 56: Both / All / None / Either
+STATIC_CONTENT[56] = () => `
+<h3>🔢 Both, All, None, Either, Neither</h3>
+<div class="vocab-grid">
+${VC('Both','Los dos, ambos (de dos)','','Both sisters are doctors')}
+${VC('All','Todos, todo (más de dos)','','All students passed')}
+${VC('None','Ninguno (cero de varios)','','None of them came')}
+${VC('Either','Cualquiera (de dos)','','You can take either road')}
+${VC('Neither','Ninguno (de dos)','','Neither option is good')}
+</div>
+<div class="vocab-grid">
+${VC('Both my parents work.','Ambos padres trabajan.','','Both my parents work')}
+${VC('All of the students were on time.','Todos los estudiantes llegaron a tiempo.','','All of the students were on time')}
+${VC('Neither of the answers is correct.','Ninguna de las dos respuestas es correcta.','','Neither of the answers is correct')}
+${VC('I don\'t like either option.','No me gusta ninguna de las dos opciones.','','I don\'t like either option')}
+</div>
+${Q('q56a1','Para hablar de "los dos" de un par, uso:',['All','Both','None','Every'],1)}`;
+
+// LECCIÓN 57: Condicionales 0 y 1
+STATIC_CONTENT[57] = () => `
+<h3>🔀 Condicionales 0 y 1</h3>
+<p>Las oraciones condicionales tienen una cláusula <strong>IF</strong> y una <strong>resultado</strong>.</p>
+<div class="vocab-grid">
+${VC('Condicional 0 (siempre verdad)','If + Present Simple, Present Simple','','If you heat water, it boils')}
+${VC('Condicional 1 (posible en el futuro)','If + Present Simple, WILL + verb','','If it rains, I will stay home')}
+</div>
+<div class="vocab-grid">
+${VC('Tipo 0: verdad universal','If you mix red and blue, you get purple.','','If you mix red and blue, you get purple')}
+${VC('Tipo 0: instrucciones','If the light is red, you stop.','','If the light is red, you stop')}
+${VC('Tipo 1: probable','If I study hard, I will pass.','','If I study hard, I will pass')}
+${VC('Tipo 1: posible','If she calls me, I will tell her.','','If she calls me, I will tell her')}
+</div>
+<p><strong>Nota:</strong> La cláusula IF puede ir al principio o al final.</p>
+${Q('q57a1','¿Cuál es un Condicional 1 correcto?',['If I study, I passed','If I will study, I will pass','If I study, I will pass','If I studied, I will pass'],2)}`;
+
+// LECCIÓN 58: Oraciones de Relativo
+STATIC_CONTENT[58] = () => `
+<h3>🔗 Oraciones de Relativo</h3>
+<p>Se usan para dar <strong>información adicional</strong> sobre una persona o cosa.</p>
+<div class="vocab-grid">
+${VC('Who','Para personas','','The man who called is my boss')}
+${VC('Which','Para cosas o animales','','The book which I read was great')}
+${VC('That','Para personas o cosas (informal)','','The car that I bought is red')}
+${VC('Where','Para lugares','','The city where I was born')}
+${VC('Whose','Para posesión','','The woman whose car was stolen')}
+</div>
+<div class="vocab-grid">
+${VC('The girl who won the race is my sister.','La chica que ganó la carrera es mi hermana.','','The girl who won the race is my sister')}
+${VC('This is the house where I grew up.','Esta es la casa donde crecí.','','This is the house where I grew up')}
+${VC('The book that I\'m reading is fascinating.','El libro que estoy leyendo es fascinante.','','The book that I am reading is fascinating')}
+</div>
+${Q('q58a1','Elige el pronombre relativo correcto: "The man ___ saved her was a hero."',['which','whose','who','where'],2)}`;
+
+// LECCIÓN 59: Infinitivo vs Gerundio
+STATIC_CONTENT[59] = () => `
+<h3>📝 Infinitivo (TO + verbo) vs. Gerundio (-ING)</h3>
+<p>Algunos verbos van con <strong>TO + infinitivo</strong>, otros con <strong>verbo + ING</strong>.</p>
+<div class="vocab-grid">
+${VC('Want / Need / Hope + TO','I want to leave. I need to study.','','I want to leave')}
+${VC('Decide / Plan / Promise + TO','She decided to go. He plans to stay.','','She decided to go')}
+${VC('Enjoy / Avoid / Mind + ING','I enjoy cooking. She avoids lying.','','I enjoy cooking')}
+${VC('Finish / Stop / Keep + ING','He stopped smoking. Keep going!','','He stopped smoking')}
+${VC('Like / Love / Hate + both','I like to swim / I like swimming','','I like swimming')}
+</div>
+<div class="vocab-grid">
+${VC('She agreed to help.','Ella acordó ayudar.','','She agreed to help')}
+${VC('I finished writing the report.','Terminé de escribir el informe.','','I finished writing the report')}
+${VC('He tried to open the door.','Intentó abrir la puerta.','','He tried to open the door')}
+</div>
+${Q('q59a1','¿Cuál es correcto?',['She enjoys to cook','She enjoys cooking','She enjoys cook','She is enjoying to cook'],1)}`;
+
+// LECCIÓN 60: 100 Verbos de Acción
+STATIC_CONTENT[60] = () => `
+<h3>💪 100 Verbos de Acción Esenciales</h3>
+<p>Dominar estos verbos te da la base para hablar de casi cualquier cosa.</p>
+<div class="vocab-grid">
+${VC('Run','Correr','','run')}${VC('Walk','Caminar','','walk')}${VC('Jump','Saltar','','jump')}
+${VC('Swim','Nadar','','swim')}${VC('Eat','Comer','','eat')}${VC('Drink','Beber','','drink')}
+${VC('Sleep','Dormir','','sleep')}${VC('Wake up','Despertar','','wake up')}${VC('Work','Trabajar','','work')}
+${VC('Study','Estudiar','','study')}${VC('Read','Leer','','read')}${VC('Write','Escribir','','write')}
+${VC('Speak / Talk','Hablar','','speak')}${VC('Listen','Escuchar','','listen')}${VC('Hear','Oír','','hear')}
+${VC('See / Look','Ver / Mirar','','see, look')}${VC('Think','Pensar','','think')}${VC('Feel','Sentir','','feel')}
+${VC('Buy','Comprar','','buy')}${VC('Sell','Vender','','sell')}${VC('Pay','Pagar','','pay')}
+${VC('Open','Abrir','','open')}${VC('Close','Cerrar','','close')}${VC('Drive','Manejar','','drive')}
+</div>
+${Q('q60a1','¿Cuál es el pasado de "buy"?',['Buyed','Bough','Bought','Buys'],2)}`;
+
+// LECCIÓN 61: Repaso Intermedio
+STATIC_CONTENT[61] = () => `
+<h3>🔁 Repaso Nivel Intermedio</h3>
+<p>Repasemos los tiempos verbales y estructuras del nivel intermedio.</p>
+<div class="vocab-grid">
+${VC('Past Simple: I worked / I went','Acción completada en el pasado','','I worked all day')}
+${VC('Past Continuous: I was working','Acción en progreso en el pasado','','I was sleeping when he arrived')}
+${VC('Present Perfect: I have worked','Conexión pasado-presente','','I have lived here for 5 years')}
+${VC('Will: I will travel','Predicciones y decisiones','','I will call you tomorrow')}
+${VC('Going to: I\'m going to travel','Planes e intenciones','','I am going to study tonight')}
+${VC('Modals: must, should, could...','Obligación, consejo, posibilidad','','You should exercise more')}
+${VC('Comparatives: bigger, more expensive','Comparar dos cosas','','She is taller than me')}
+${VC('Conditionals 0/1: If + Present, will','Condiciones reales o posibles','','If it rains, I will stay home')}
+</div>
+${Q('q61a1','¿Cuál expresa una experiencia de vida?',['I went to Paris last year','I have been to Paris','I was going to Paris','I will go to Paris'],1)}`;
+
+// LECCIÓN 62: Viajes y Turismo
+STATIC_CONTENT[62] = () => `
+<h3>✈️ Viajes y Turismo — Travel</h3>
+<div class="vocab-grid">
+${VC('Passport','Pasaporte','','passport')}${VC('Visa','Visa','','visa')}
+${VC('Airport','Aeropuerto','','airport')}${VC('Flight','Vuelo','','flight')}
+${VC('Boarding pass','Pase de abordar','','boarding pass')}${VC('Check-in','Registro de entrada','','check in')}
+${VC('Luggage / Baggage','Equipaje','','luggage, baggage')}${VC('Hotel','Hotel','','hotel')}
+${VC('Reservation / Booking','Reserva','','reservation, booking')}${VC('Tourist attraction','Atracción turística','','tourist attraction')}
+${VC('Map','Mapa','','map')}${VC('Currency exchange','Cambio de divisas','','currency exchange')}
+</div>
+<p><strong>Frases útiles:</strong></p>
+<div class="vocab-grid">
+${VC('Where is the nearest hotel?','¿Dónde está el hotel más cercano?','','Where is the nearest hotel?')}
+${VC('I\'d like to check in, please.','Me gustaría registrarme, por favor.','','I would like to check in, please')}
+${VC('What time does the flight depart?','¿A qué hora sale el vuelo?','','What time does the flight depart?')}
+</div>
+${Q('q62a1','¿Cómo se dice "pase de abordar"?',['Boarding pass','Passport','Ticket','Check-in'],0)}`;
+
+// LECCIÓN 63: En el Restaurante
+STATIC_CONTENT[63] = () => `
+<h3>🍽️ En el Restaurante — At the Restaurant</h3>
+<div class="vocab-grid">
+${VC('Menu','Menú, carta','','menu')}${VC('Waiter / Waitress','Mesero/a','','waiter, waitress')}
+${VC('Order','Pedido / Pedir','','order')}${VC('Appetizer','Entrada, aperitivo','','appetizer')}
+${VC('Main course','Plato principal','','main course')}${VC('Dessert','Postre','','dessert')}
+${VC('Bill / Check','Cuenta','','bill, check')}${VC('Tip','Propina','','tip')}
+${VC('Reservation','Reserva','','reservation')}${VC('Takeaway / To-go','Para llevar','','takeaway')}
+</div>
+<p><strong>Diálogo típico:</strong></p>
+<div class="vocab-grid">
+${VC('A table for two, please.','Una mesa para dos, por favor.','','A table for two please')}
+${VC('I\'ll have the grilled chicken.','Voy a querer el pollo a la parrilla.','','I will have the grilled chicken')}
+${VC('Could we have the bill, please?','¿Nos puede traer la cuenta, por favor?','','Could we have the bill, please?')}
+${VC('Is service included?','¿Está incluido el servicio?','','Is service included?')}
+</div>
+${Q('q63a1','¿Cómo pides la cuenta de forma cortés?',['Give me the bill','I want the check','Could we have the bill, please?','Bill now'],2)}`;
+
+// LECCIÓN 64: Compras
+STATIC_CONTENT[64] = () => `
+<h3>🛍️ De Compras — Shopping</h3>
+<div class="vocab-grid">
+${VC('Shop / Store','Tienda','','shop, store')}${VC('Mall / Shopping center','Centro comercial','','mall')}
+${VC('Price','Precio','','price')}${VC('Discount / Sale','Descuento / Rebajas','','discount, sale')}
+${VC('Receipt','Recibo','','receipt')}${VC('Cash','Efectivo','','cash')}
+${VC('Credit card','Tarjeta de crédito','','credit card')}${VC('Size','Talla, tamaño','','size')}
+${VC('Try on','Probarse (ropa)','','try on')}${VC('Refund','Devolución de dinero','','refund')}
+</div>
+<div class="vocab-grid">
+${VC('How much is this?','¿Cuánto cuesta esto?','','How much is this?')}
+${VC('Can I try this on?','¿Puedo probarme esto?','','Can I try this on?')}
+${VC('Do you have this in a larger size?','¿Tiene esto en una talla más grande?','','Do you have this in a larger size?')}
+${VC('I\'ll take it.','Me lo llevo.','','I will take it')}
+</div>
+${Q('q64a1','¿Cómo preguntas el precio?',['What cost this?','How many is this?','How much is this?','What price does it?'],2)}`;
+
+// LECCIÓN 65: Salud y Medicina
+STATIC_CONTENT[65] = () => `
+<h3>🏥 Salud y Medicina — Health</h3>
+<div class="vocab-grid">
+${VC('Doctor / Physician','Médico/a','','doctor')}${VC('Hospital','Hospital','','hospital')}
+${VC('Headache','Dolor de cabeza','','headache')}${VC('Stomachache','Dolor de estómago','','stomachache')}
+${VC('Fever','Fiebre','','fever')}${VC('Cold','Resfriado','','cold')}
+${VC('Flu','Gripe, influenza','','flu')}${VC('Medicine / Medication','Medicamento','','medicine')}
+${VC('Prescription','Receta médica','','prescription')}${VC('Allergy','Alergia','','allergy')}
+${VC('Surgery','Cirugía','','surgery')}${VC('Emergency','Emergencia','','emergency')}
+</div>
+<div class="vocab-grid">
+${VC('I have a headache.','Tengo dolor de cabeza.','','I have a headache')}
+${VC('I don\'t feel well.','No me siento bien.','','I don\'t feel well')}
+${VC('I need to see a doctor.','Necesito ver un médico.','','I need to see a doctor')}
+${VC('I\'m allergic to penicillin.','Soy alérgico a la penicilina.','','I am allergic to penicillin')}
+</div>
+${Q('q65a1','¿Cómo dices que tienes fiebre?',['I have a cold','I have a fever','I have a flu','I have an allergy'],1)}`;
+
+// LECCIÓN 66: Pasado Perfecto
+STATIC_CONTENT[66] = () => `
+<h3>📝 Pasado Perfecto (Past Perfect)</h3>
+<p>Se forma con <strong>HAD + participio pasado</strong>. Indica una acción anterior a otra en el pasado.</p>
+<div class="vocab-grid">
+${VC('had + participio','Para todos los sujetos','','I had finished before she arrived')}
+${VC('hadn\'t + participio','Negación','','He hadn\'t eaten, so he was hungry')}
+${VC('Had + sujeto + participio?','Pregunta','','Had you met her before?')}
+</div>
+<p><strong>Secuencia de tiempo:</strong></p>
+<div class="vocab-grid">
+${VC('When I arrived, he had already left.','Cuando llegué, él ya se había ido.','','When I arrived, he had already left')}
+${VC('She had never flown before that trip.','Nunca había volado antes de ese viaje.','','She had never flown before that trip')}
+${VC('I was tired because I hadn\'t slept.','Estaba cansado porque no había dormido.','','I was tired because I had not slept')}
+</div>
+<p><strong>Palabras clave:</strong> after, before, when, already, never, by the time</p>
+${Q('q66a1','¿Cuál usa correctamente el Past Perfect?',['When I arrived, he left','By the time I arrived, he had left','I arrived after he has left','He leaved before I arrived'],1)}`;
+
+// LECCIÓN 67: Condicionales 2 y 3
+STATIC_CONTENT[67] = () => `
+<h3>🔀 Condicionales 2 y 3</h3>
+<p>Para situaciones <strong>hipotéticas o contrarias a la realidad</strong>.</p>
+<div class="vocab-grid">
+${VC('Tipo 2: situación imaginaria presente','If + Past Simple, WOULD + verb','','If I had money, I would buy a car')}
+${VC('Tipo 3: situación imaginaria pasada','If + Past Perfect, WOULD HAVE + PP','','If I had studied, I would have passed')}
+</div>
+<div class="vocab-grid">
+${VC('If I were rich, I would travel.','Si fuera rico, viajaría.','','If I were rich, I would travel')}
+${VC('If she spoke English, she would get the job.','Si hablara inglés, conseguiría el trabajo.','','If she spoke English, she would get the job')}
+${VC('If I had known, I would have called.','Si lo hubiera sabido, habría llamado.','','If I had known, I would have called')}
+${VC('She would have passed if she had studied.','Habría pasado si hubiera estudiado.','','She would have passed if she had studied')}
+</div>
+${Q('q67a1','¿Cuál es Condicional 2 correcto?',['If I have money, I buy a car','If I had money, I would buy a car','If I would have money, I would buy','If I had money, I will buy a car'],1)}`;
+
+// LECCIÓN 68: Wish / If only
+STATIC_CONTENT[68] = () => `
+<h3>🌟 Wish / If Only</h3>
+<p>Expresan <strong>deseos contrarios a la realidad</strong> o arrepentimiento.</p>
+<div class="vocab-grid">
+${VC('Wish + Past Simple','Deseo sobre el presente (imposible ahora)','','I wish I spoke French')}
+${VC('Wish + Past Perfect','Arrepentimiento sobre el pasado','','I wish I had studied harder')}
+${VC('Wish + Would','Deseo de cambio (irritación o esperanza)','','I wish it would stop raining')}
+${VC('If only...','Igual que wish, más énfasis emocional','','If only I had more time!')}
+</div>
+<div class="vocab-grid">
+${VC('I wish I were taller.','Quisiera ser más alto.','','I wish I were taller')}
+${VC('I wish I hadn\'t said that.','Ojalá no hubiera dicho eso.','','I wish I had not said that')}
+${VC('If only I could fly!','¡Si tan solo pudiera volar!','','If only I could fly')}
+${VC('She wishes she lived near the beach.','Ella quisiera vivir cerca de la playa.','','She wishes she lived near the beach')}
+</div>
+${Q('q68a1','Para expresar arrepentimiento sobre el pasado:',['I wish I study more','I wish I studied more','I wish I had studied more','I wish I will study more'],2)}`;
+
+// LECCIÓN 70: Reported Speech
+STATIC_CONTENT[70] = () => `
+<h3>📢 Reported Speech (Estilo Indirecto)</h3>
+<p>Usamos reported speech para <strong>reportar lo que alguien dijo</strong>, sin citar textualmente.</p>
+<div class="vocab-grid">
+${VC('Direct → Reported: Present → Past','She said: "I am tired." → She said she was tired.','','She said she was tired')}
+${VC('Will → Would','He said: "I will call." → He said he would call.','','He said he would call')}
+${VC('Can → Could','She said: "I can swim." → She said she could swim.','','She said she could swim')}
+${VC('Must → Had to','He said: "I must go." → He said he had to go.','','He said he had to go')}
+</div>
+<div class="vocab-grid">
+${VC('"I love you." → He said he loved me.','Cambio de presente a pasado','','He said he loved her')}
+${VC('"Come here!" → She told me to come there.','Imperativo → told + to infinitive','','She told me to come here')}
+${VC('"Are you OK?" → He asked if I was OK.','Pregunta → asked if/whether','','He asked if I was okay')}
+</div>
+${Q('q70a1','Reporte: "I am hungry." → She said ___',['she is hungry','she was hungry','she will be hungry','she has hungry'],1)}`;
+
+// LECCIÓN 71: Phrasal Verbs
+STATIC_CONTENT[71] = () => `
+<h3>🔗 Phrasal Verbs Esenciales</h3>
+<p>Los <strong>phrasal verbs</strong> son combinaciones de verbo + partícula con un significado propio.</p>
+<div class="vocab-grid">
+${VC('Give up','Rendirse, dejar de','','Never give up')}${VC('Look up','Buscar (información)','','Look it up online')}
+${VC('Turn on/off','Encender/apagar','','Turn on the light')}${VC('Pick up','Recoger, levantar','','Pick up the phone')}
+${VC('Find out','Descubrir, enterarse','','I found out the truth')}${VC('Go on','Continuar, seguir','','Please go on')}
+${VC('Run out of','Quedarse sin','','We ran out of milk')}${VC('Take off','Despegar / Quitarse','','The plane took off')}
+${VC('Break down','Averiarse / Derrumbarse','','My car broke down')}${VC('Set up','Establecer, montar','','They set up a company')}
+${VC('Put off','Posponer','','Don\'t put off until tomorrow')}${VC('Look forward to','Esperar con ilusión','','I look forward to seeing you')}
+</div>
+${Q('q71a1','¿Qué significa "give up"?',['Dar arriba','Regalar','Rendirse, abandonar','Subir'],2)}`;
+
+// LECCIÓN 72: Idioms y Expresiones
+STATIC_CONTENT[72] = () => `
+<h3>💬 Idioms y Expresiones Idiomáticas</h3>
+<p>Los <strong>idioms</strong> son expresiones cuyo significado no se deduce de las palabras individuales.</p>
+<div class="vocab-grid">
+${VC('Break a leg!','¡Mucha suerte! (literalmente: rómpete una pierna)','','Break a leg!')}
+${VC('It\'s raining cats and dogs','Está lloviendo a cántaros','','It is raining cats and dogs')}
+${VC('Hit the nail on the head','Dar en el clavo','','You hit the nail on the head')}
+${VC('Under the weather','Sentirse mal / enfermo','','I\'m feeling under the weather')}
+${VC('Bite the bullet','Aguantar, hacer algo difícil','','Just bite the bullet')}
+${VC('Piece of cake','Pan comido, muy fácil','','The exam was a piece of cake')}
+${VC('Cost an arm and a leg','Costar un ojo de la cara','','That car costs an arm and a leg')}
+${VC('Once in a blue moon','Muy raramente','','I exercise once in a blue moon')}
+${VC('Spill the beans','Revelar un secreto','','Who spilled the beans?')}
+${VC('Beat around the bush','Rodear el tema, no ir al grano','','Stop beating around the bush')}
+</div>
+${Q('q72a1','¿Qué significa "a piece of cake"?',['Un trozo de pastel','Algo muy fácil','Algo muy caro','Un regalo'],1)}`;
+
+// LECCIÓN 73: Conectores y Discurso
+STATIC_CONTENT[73] = () => `
+<h3>🔗 Conectores del Discurso</h3>
+<p>Los conectores hacen tu inglés más fluido y cohesionado.</p>
+<div class="vocab-grid">
+${VC('However','Sin embargo (contraste)','','However, I disagree')}
+${VC('Although / Even though','Aunque (concesión)','','Although it was late, she stayed')}
+${VC('Furthermore / Moreover','Además, es más (adición)','','Furthermore, the results show...')}
+${VC('Therefore / Thus','Por lo tanto (consecuencia)','','Therefore, we decided to leave')}
+${VC('Nevertheless','No obstante, aun así','','Nevertheless, we continued')}
+${VC('As a result','Como resultado','','As a result, sales increased')}
+${VC('In contrast','En contraste','','In contrast, the other team...')}
+${VC('In addition','Además, adicionalmente','','In addition to this...')}
+${VC('On the other hand','Por otro lado','','On the other hand...')}
+${VC('In conclusion','En conclusión','','In conclusion, we can say...')}
+</div>
+${Q('q73a1','¿Qué conector usas para introducir una conclusión?',['However','Furthermore','In conclusion','Although'],2)}`;
+
+// LECCIÓN 74: Business English
+STATIC_CONTENT[74] = () => `
+<h3>💼 Business English — Inglés de Negocios</h3>
+<p>Vocabulario y frases esenciales para el entorno profesional.</p>
+<div class="vocab-grid">
+${VC('Meeting','Reunión','','meeting')}${VC('Agenda','Orden del día','','agenda')}
+${VC('Deadline','Fecha límite, plazo','','deadline')}${VC('Budget','Presupuesto','','budget')}
+${VC('Invoice','Factura','','invoice')}${VC('Contract','Contrato','','contract')}
+${VC('Colleague','Colega, compañero/a','','colleague')}${VC('Negotiation','Negociación','','negotiation')}
+${VC('Proposal','Propuesta','','proposal')}${VC('Report','Informe, reporte','','report')}
+</div>
+<p><strong>Frases para reuniones:</strong></p>
+<div class="vocab-grid">
+${VC('Shall we get started?','¿Comenzamos?','','Shall we get started?')}
+${VC('Could you elaborate on that?','¿Podría ampliar eso?','','Could you elaborate on that?')}
+${VC('I\'d like to follow up on...','Me gustaría hacer seguimiento a...','','I would like to follow up on this')}
+${VC('Let\'s move on to the next point.','Pasemos al siguiente punto.','','Let us move on to the next point')}
+</div>
+${Q('q74a1','¿Cómo se dice "fecha límite"?',['Deadline','Timeline','Schedule','Due'],0)}`;
+
+// LECCIÓN 75: False Friends
+STATIC_CONTENT[75] = () => `
+<h3>⚠️ False Friends — Falsos Amigos</h3>
+<p>Palabras que se parecen al español pero significan algo diferente.</p>
+<div class="vocab-grid">
+${VC('Actually','En realidad (¡NO actualmente!)','','Actually, I disagree')}
+${VC('Eventually','Finalmente (¡NO eventualmente!)','','Eventually she arrived')}
+${VC('Embarrassed','Avergonzado (¡NO embarazada!)','','I was so embarrassed')}
+${VC('Library','Biblioteca (¡NO librería!)','','Go to the library')}
+${VC('Lecture','Conferencia/clase (¡NO lectura!)','','I have a lecture at 3pm')}
+${VC('Sensible','Sensato, razonable (¡NO sensible!)','','She is very sensible')}
+${VC('Sympathetic','Comprensivo (¡NO simpático!)','','He was very sympathetic')}
+${VC('Constipated','Estreñido (¡NO constipado!)','','I\'m constipated')}
+${VC('Fabric','Tela/tejido (¡NO fábrica!)','','cotton fabric')}
+${VC('Pretend','Fingir (¡NO pretender/aspirar!)','','She pretended to be asleep')}
+</div>
+${Q('q75a1','¿Qué significa "actually"?',['Actualmente','En el futuro','En realidad','A veces'],2)}`;
+
+// LECCIÓN 76: Escritura Formal
+STATIC_CONTENT[76] = () => `
+<h3>✍️ Escritura Formal — Formal Writing</h3>
+<p>Estructura y frases para emails y cartas formales en inglés.</p>
+<div class="vocab-grid">
+${VC('Dear Mr./Ms. [Last name]','Estimado/a Sr./Sra. (apertura)','','Dear Mr. Smith')}
+${VC('To whom it may concern','A quien corresponda','','To whom it may concern')}
+${VC('I am writing to...','Le escribo para...','','I am writing to inquire about')}
+${VC('I would like to...','Me gustaría...','','I would like to request')}
+${VC('Please find attached...','Adjunto encontrará...','','Please find attached the document')}
+${VC('I look forward to hearing from you.','Quedo en espera de su respuesta.','','I look forward to hearing from you')}
+${VC('Yours sincerely','Atentamente (cuando sabes el nombre)','','Yours sincerely')}
+${VC('Yours faithfully','Atentamente (cuando no sabes el nombre)','','Yours faithfully')}
+${VC('Best regards','Cordialmente','','Best regards')}
+</div>
+${Q('q76a1','¿Cuál cierre usas cuando conoces el nombre del destinatario?',['Yours faithfully','To whom it may concern','Yours sincerely','Best regards (informal)'],2)}`;
+
+// LECCIÓN 77: Conversación Avanzada
+STATIC_CONTENT[77] = () => `
+<h3>💬 Conversación Avanzada</h3>
+<p>Expresiones naturales para sonar como un hablante nativo.</p>
+<div class="vocab-grid">
+${VC('Hang on a second.','Espera un momento.','','Hang on a second')}
+${VC('That\'s a good point.','Buen punto. / Tienes razón en eso.','','That is a good point')}
+${VC('I see where you\'re coming from.','Entiendo tu punto de vista.','','I see where you are coming from')}
+${VC('Let me think about it.','Déjame pensarlo.','','Let me think about it')}
+${VC('It depends on...','Depende de...','','It depends on the situation')}
+${VC('As far as I know...','Que yo sepa...','','As far as I know')}
+${VC('To be honest...','Siendo honesto...','','To be honest, I disagree')}
+${VC('What do you make of...?','¿Qué opinas de...?','','What do you make of this?')}
+${VC('I couldn\'t agree more.','Estoy completamente de acuerdo.','','I couldn\'t agree more')}
+${VC('That\'s beside the point.','Eso no viene al caso.','','That is beside the point')}
+</div>
+${Q('q77a1','¿Qué significa "I see where you\'re coming from"?',['No entiendo nada','Entiendo tu punto de vista','Ven de donde sea','Te veo llegar'],1)}`;
+
+// LECCIÓN 78: Pronunciación Avanzada
+STATIC_CONTENT[78] = () => `
+<h3>🔊 Pronunciación Avanzada</h3>
+<p>Aspectos de pronunciación que marcan la diferencia entre nivel intermedio y avanzado.</p>
+<div class="vocab-grid">
+${VC('Linking (enlace)','Conectar el final de una palabra con el inicio de la siguiente','','turn_it_on → "tur-ni-ton"')}
+${VC('Schwa /ə/','El sonido más común del inglés: about, the, a','','about, the, computer')}
+${VC('Silent letters','Letras que no se pronuncian: knife, write, know','','knife, write, know, island')}
+${VC('Word stress','El acento va en la sílaba correcta: PHOtograph, phoTOgraphy','','photograph, photography')}
+${VC('Intonation','La melodía del inglés: ↗ preguntas yes/no, ↘ afirmaciones','','Are you ready? Yes, I am.')}
+${VC('Contractions','Hablar con contracciones suena más natural','','I\'ve, you\'re, he\'d, they\'ll')}
+</div>
+<div class="vocab-grid">
+${VC('GH silent: light, night, through','No se pronuncia la GH','','light, night, through, daughter')}
+${VC('K silent: know, knee, knife','K no suena antes de N','','know, knee, knock')}
+${VC('TH voiced /ð/: the, this, that','Vibra la lengua','','the, this, that, there')}
+${VC('TH unvoiced /θ/: think, three, bath','No vibra','','think, three, bathroom')}
+</div>
+${Q('q78a1','¿Cómo se llama la vocal más común del inglés?',['The A sound','Schwa /ə/','The E sound','Silent vowel'],1)}`;
+
+// LECCIÓN 79: Cultura Anglosajona
+STATIC_CONTENT[79] = () => `
+<h3>🌍 Cultura Anglosajona</h3>
+<p>Para hablar inglés de verdad, hay que entender la cultura.</p>
+<div class="vocab-grid">
+${VC('Small talk','Conversación informal casual: clima, deportes, fin de semana','','How\'s the weather? How was your weekend?')}
+${VC('Please & Thank you','Muy importantes. Omitirlos puede sonar rudo.','','Please, thank you, you\'re welcome')}
+${VC('Queuing (UK) / Standing in line (US)','Hacer cola es sagrado. Nunca se puede adelantar.','','please queue here')}
+${VC('Privacy','Los anglosajones valoran el espacio personal.','','Please respect my space')}
+${VC('Punctuality','Llegar tarde es falta de respeto en contexto profesional.','','I\'m sorry I\'m late')}
+${VC('Sarcasm & humor','El humor inglés puede ser muy sutil e irónico.','','Oh, great, another Monday')}
+${VC('Tipping (US)','En EE.UU. la propina es obligación cultural (15-20%)','','Is the tip included?')}
+${VC('British vs American English','Differences in vocabulary and spelling','','colour vs color, lift vs elevator')}
+</div>
+${Q('q79a1','¿Qué es el "small talk"?',['Un idioma pequeño','Conversación informal casual','Hablar poco','Un dialecto'],1)}`;
+
+// ============================================
+// ABRIR LECCIÓN — solo contenido estático
+// ============================================
+
+// ── Lecciones faltantes: 1, 2, 3, 8, 22, 41, 42, 69, 80 ──
+
+STATIC_CONTENT[1] = () => {
+  const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+  const pron = ['/eI/','b','s','d','/i/','ef','d\u0292i','eIt\u0283','/aI/','d\u0292eI','keI','el','em','en','/oU/','pi','kjur','ar','es','ti','ju','vi','d\u028cbljur','eks','waI','zi'];
+  const ipa = ['/e\u026a/','\/b\u026a\u02d0\/','\/s\u026a\u02d0\/','\/d\u026a\u02d0\/','\/\u026a\u02d0\/','\/\u025bf\/','\/d\u0292\u026a\u02d0\/','\/e\u026at\u0283\/','\/a\u026a\/','\/d\u0292e\u026a\/','\/ke\u026a\/','\/\u025bl\/','\/\u025bm\/','\/\u025bn\/','\/o\u028a\/','\/p\u026a\u02d0\/','\/kju\u02d0\/','\/\u0251\u02d0r\/','\/\u025bs\/','\/t\u026a\u02d0\/','\/ju\u02d0\/','\/v\u026a\u02d0\/','\/\u02c8d\u028cbljU\/','\/\u025bks\/','\/wa\u026a\/','\/zi\u02d0\/'];
+  const cards = letters.map((l,i) => `<div class="vcard"><div class="vcard-word">${l}<button class="speak-btn" onclick="say('${l}')">🔊</button></div><div class="vcard-pron">${ipa[i]}</div></div>`).join('');
+  return `<h3>🔤 Las 26 Letras del Alfabeto</h3>
+<p>El inglés tiene <strong>26 letras</strong>. Toca 🔊 para escuchar la pronunciación.</p>
+<div class="vocab-grid">${cards}</div>
+<p><strong>Practica:</strong> <button class="speak-btn" onclick="say('How do you spell your name?')">🔊</button> How do you spell your name?</p>
+<div class="quiz-block"><div class="quiz-q">❓ ¿Cómo se pronuncia la letra H?</div><div class="quiz-opts" id="q1a1">
+<button class="quiz-opt" onclick="checkQuiz(this,0,0,'q1a1')">/eɪtʃ/ — correcta</button>
+<button class="quiz-opt" onclick="checkQuiz(this,1,0,'q1a1')">/hɛ/ — incorrecta</button>
+<button class="quiz-opt" onclick="checkQuiz(this,2,0,'q1a1')">/haɪ/ — incorrecta</button>
+<button class="quiz-opt" onclick="checkQuiz(this,3,0,'q1a1')">/ɑːr/ — es la R</button>
+</div><div class="quiz-feedback" id="fb_q1a1"></div></div>`;
+};
+
+STATIC_CONTENT[2] = () => `
+<h3>🔊 Sonidos del Inglés — Fonética IPA</h3>
+<p>El inglés tiene <strong>44 fonemas</strong>. Conocer los símbolos IPA te ayuda a pronunciar cualquier palabra.</p>
+<div class="vocab-grid">
+<div class="vcard"><div class="vcard-word">/iː/<button class="speak-btn" onclick="say('free')">🔊</button></div><div class="vcard-meaning">see, tree, free</div></div>
+<div class="vcard"><div class="vcard-word">/ɪ/<button class="speak-btn" onclick="say('sit')">🔊</button></div><div class="vcard-meaning">sit, big, hit</div></div>
+<div class="vcard"><div class="vcard-word">/e/<button class="speak-btn" onclick="say('bed')">🔊</button></div><div class="vcard-meaning">bed, red, head</div></div>
+<div class="vcard"><div class="vcard-word">/æ/<button class="speak-btn" onclick="say('cat')">🔊</button></div><div class="vcard-meaning">cat, man, hat</div></div>
+<div class="vcard"><div class="vcard-word">/ɑː/<button class="speak-btn" onclick="say('car')">🔊</button></div><div class="vcard-meaning">car, far, star</div></div>
+<div class="vcard"><div class="vcard-word">/ʌ/<button class="speak-btn" onclick="say('sun')">🔊</button></div><div class="vcard-meaning">cup, run, sun</div></div>
+<div class="vcard"><div class="vcard-word">/θ/<button class="speak-btn" onclick="say('think')">🔊</button></div><div class="vcard-meaning">think, three, bath</div></div>
+<div class="vcard"><div class="vcard-word">/ð/<button class="speak-btn" onclick="say('this')">🔊</button></div><div class="vcard-meaning">the, this, father</div></div>
+<div class="vcard"><div class="vcard-word">/ʃ/<button class="speak-btn" onclick="say('shoe')">🔊</button></div><div class="vcard-meaning">she, fish, shoe</div></div>
+<div class="vcard"><div class="vcard-word">/tʃ/<button class="speak-btn" onclick="say('chair')">🔊</button></div><div class="vcard-meaning">chair, church, beach</div></div>
+</div>
+<p><strong>Par mínimo:</strong> Ship /ʃɪp/ vs Sheep /ʃiːp/ <button class="speak-btn" onclick="say('ship. sheep.')">🔊</button></p>
+<div class="quiz-block"><div class="quiz-q">❓ Sonido de TH en "think":</div><div class="quiz-opts" id="q2a1">
+<button class="quiz-opt" onclick="checkQuiz(this,0,0,'q2a1')">/θ/ — sordo (sin vibración)</button>
+<button class="quiz-opt" onclick="checkQuiz(this,1,0,'q2a1')">/ð/ — sonoro</button>
+<button class="quiz-opt" onclick="checkQuiz(this,2,0,'q2a1')">/t/ — como en español</button>
+<button class="quiz-opt" onclick="checkQuiz(this,3,0,'q2a1')">/s/ — como serpiente</button>
+</div><div class="quiz-feedback" id="fb_q2a1"></div></div>`;
+
+STATIC_CONTENT[3] = () => `
+<h3>🔢 Números 1-1000</h3>
+<p>11-12 son irregulares. Del 13-19 terminan en <strong>-teen</strong>. Las decenas en <strong>-ty</strong>.</p>
+<div class="vocab-grid">
+<div class="vcard"><div class="vcard-word">1 — one<button class="speak-btn" onclick="say('one')">🔊</button></div></div>
+<div class="vcard"><div class="vcard-word">2 — two<button class="speak-btn" onclick="say('two')">🔊</button></div></div>
+<div class="vcard"><div class="vcard-word">3 — three<button class="speak-btn" onclick="say('three')">🔊</button></div></div>
+<div class="vcard"><div class="vcard-word">4 — four<button class="speak-btn" onclick="say('four')">🔊</button></div></div>
+<div class="vcard"><div class="vcard-word">5 — five<button class="speak-btn" onclick="say('five')">🔊</button></div></div>
+<div class="vcard"><div class="vcard-word">6 — six<button class="speak-btn" onclick="say('six')">🔊</button></div></div>
+<div class="vcard"><div class="vcard-word">7 — seven<button class="speak-btn" onclick="say('seven')">🔊</button></div></div>
+<div class="vcard"><div class="vcard-word">8 — eight<button class="speak-btn" onclick="say('eight')">🔊</button></div></div>
+<div class="vcard"><div class="vcard-word">9 — nine<button class="speak-btn" onclick="say('nine')">🔊</button></div></div>
+<div class="vcard"><div class="vcard-word">10 — ten<button class="speak-btn" onclick="say('ten')">🔊</button></div></div>
+<div class="vcard"><div class="vcard-word">11 — eleven<button class="speak-btn" onclick="say('eleven')">🔊</button></div></div>
+<div class="vcard"><div class="vcard-word">12 — twelve<button class="speak-btn" onclick="say('twelve')">🔊</button></div></div>
+<div class="vcard"><div class="vcard-word">13 — thirteen<button class="speak-btn" onclick="say('thirteen')">🔊</button></div></div>
+<div class="vcard"><div class="vcard-word">15 — fifteen<button class="speak-btn" onclick="say('fifteen')">🔊</button></div></div>
+<div class="vcard"><div class="vcard-word">20 — twenty<button class="speak-btn" onclick="say('twenty')">🔊</button></div></div>
+<div class="vcard"><div class="vcard-word">30 — thirty<button class="speak-btn" onclick="say('thirty')">🔊</button></div></div>
+<div class="vcard"><div class="vcard-word">40 — forty<button class="speak-btn" onclick="say('forty')">🔊</button></div></div>
+<div class="vcard"><div class="vcard-word">50 — fifty<button class="speak-btn" onclick="say('fifty')">🔊</button></div></div>
+<div class="vcard"><div class="vcard-word">100 — one hundred<button class="speak-btn" onclick="say('one hundred')">🔊</button></div></div>
+<div class="vcard"><div class="vcard-word">1000 — one thousand<button class="speak-btn" onclick="say('one thousand')">🔊</button></div></div>
+</div>
+<div class="quiz-block"><div class="quiz-q">❓ ¿Cómo se dice 15?</div><div class="quiz-opts" id="q3a1">
+<button class="quiz-opt" onclick="checkQuiz(this,0,1,'q3a1')">Fiveteen</button>
+<button class="quiz-opt" onclick="checkQuiz(this,1,1,'q3a1')">Fifteen</button>
+<button class="quiz-opt" onclick="checkQuiz(this,2,1,'q3a1')">Fifthteen</button>
+<button class="quiz-opt" onclick="checkQuiz(this,3,1,'q3a1')">Fiftteen</button>
+</div><div class="quiz-feedback" id="fb_q3a1"></div></div>`;
+
+STATIC_CONTENT[8] = () => `
+<h3>🔑 Verbo TO BE — Ser / Estar</h3>
+<p>El verbo más importante del inglés. Equivale a <strong>ser</strong> y <strong>estar</strong>.</p>
+<div class="vocab-grid">
+<div class="vcard"><div class="vcard-word">I am (I'm)<button class="speak-btn" onclick="say('I am a teacher')">🔊</button></div><div class="vcard-meaning">Yo soy / estoy</div></div>
+<div class="vcard"><div class="vcard-word">You are (You're)<button class="speak-btn" onclick="say('You are right')">🔊</button></div><div class="vcard-meaning">Tú eres / estás</div></div>
+<div class="vcard"><div class="vcard-word">He is (He's)<button class="speak-btn" onclick="say('He is a doctor')">🔊</button></div><div class="vcard-meaning">Él es / está</div></div>
+<div class="vcard"><div class="vcard-word">She is (She's)<button class="speak-btn" onclick="say('She is happy')">🔊</button></div><div class="vcard-meaning">Ella es / está</div></div>
+<div class="vcard"><div class="vcard-word">It is (It's)<button class="speak-btn" onclick="say('It is cold today')">🔊</button></div><div class="vcard-meaning">Ello es / está</div></div>
+<div class="vcard"><div class="vcard-word">We are (We're)<button class="speak-btn" onclick="say('We are ready')">🔊</button></div><div class="vcard-meaning">Nosotros somos / estamos</div></div>
+<div class="vcard"><div class="vcard-word">They are (They're)<button class="speak-btn" onclick="say('They are here')">🔊</button></div><div class="vcard-meaning">Ellos son / están</div></div>
+</div>
+<p>❌ Negativa: I am not → <strong>I'm not</strong> | She is not → <strong>She isn't</strong></p>
+<p>❓ Pregunta: <strong>Are</strong> you happy? <button class="speak-btn" onclick="say('Are you happy?')">🔊</button></p>
+<div class="quiz-block"><div class="quiz-q">❓ Completa: He ___ a doctor.</div><div class="quiz-opts" id="q8a1">
+<button class="quiz-opt" onclick="checkQuiz(this,0,2,'q8a1')">am</button>
+<button class="quiz-opt" onclick="checkQuiz(this,1,2,'q8a1')">are</button>
+<button class="quiz-opt" onclick="checkQuiz(this,2,2,'q8a1')">is</button>
+<button class="quiz-opt" onclick="checkQuiz(this,3,2,'q8a1')">be</button>
+</div><div class="quiz-feedback" id="fb_q8a1"></div></div>`;
+
+STATIC_CONTENT[22] = () => `
+<h3>📝 Presente Simple</h3>
+<p>Para <strong>hábitos, rutinas y verdades universales</strong>. He/She/It agregan <strong>-S</strong>.</p>
+<div class="vocab-grid">
+<div class="vcard"><div class="vcard-word">I / You / We / They work<button class="speak-btn" onclick="say('I work every day')">🔊</button></div><div class="vcard-meaning">trabajo / trabajas / trabajamos / trabajan</div></div>
+<div class="vcard"><div class="vcard-word">He / She / It works<button class="speak-btn" onclick="say('She works at a hospital')">🔊</button></div><div class="vcard-meaning">trabaja (3ª persona +S)</div></div>
+<div class="vcard"><div class="vcard-word">Do you work?<button class="speak-btn" onclick="say('Do you work?')">🔊</button></div><div class="vcard-meaning">¿Trabajas? (pregunta)</div></div>
+<div class="vcard"><div class="vcard-word">Does she work?<button class="speak-btn" onclick="say('Does she work?')">🔊</button></div><div class="vcard-meaning">¿Trabaja ella? (3ª persona)</div></div>
+<div class="vcard"><div class="vcard-word">I don't work.<button class="speak-btn" onclick="say('I do not work')">🔊</button></div><div class="vcard-meaning">No trabajo.</div></div>
+<div class="vcard"><div class="vcard-word">She doesn't work.<button class="speak-btn" onclick="say('She does not work')">🔊</button></div><div class="vcard-meaning">Ella no trabaja.</div></div>
+<div class="vcard"><div class="vcard-word">I eat breakfast every day.<button class="speak-btn" onclick="say('I eat breakfast every day')">🔊</button></div><div class="vcard-meaning">Desayuno todos los días.</div></div>
+<div class="vcard"><div class="vcard-word">She works at a hospital.<button class="speak-btn" onclick="say('She works at a hospital')">🔊</button></div><div class="vcard-meaning">Ella trabaja en un hospital.</div></div>
+</div>
+<p><strong>Palabras clave:</strong> always, usually, often, sometimes, every day, on Mondays</p>
+<div class="quiz-block"><div class="quiz-q">❓ ¿Cuál es correcto?</div><div class="quiz-opts" id="q22a1">
+<button class="quiz-opt" onclick="checkQuiz(this,0,1,'q22a1')">She work every day</button>
+<button class="quiz-opt" onclick="checkQuiz(this,1,1,'q22a1')">She works every day</button>
+<button class="quiz-opt" onclick="checkQuiz(this,2,1,'q22a1')">She working every day</button>
+<button class="quiz-opt" onclick="checkQuiz(this,3,1,'q22a1')">She is work every day</button>
+</div><div class="quiz-feedback" id="fb_q22a1"></div></div>
+<div class="quiz-block"><div class="quiz-q">❓ ¿Cómo se forma la pregunta con HE?</div><div class="quiz-opts" id="q22b2">
+<button class="quiz-opt" onclick="checkQuiz(this,0,1,'q22b2')">Works he?</button>
+<button class="quiz-opt" onclick="checkQuiz(this,1,1,'q22b2')">Does he work?</button>
+<button class="quiz-opt" onclick="checkQuiz(this,2,1,'q22b2')">Do he works?</button>
+<button class="quiz-opt" onclick="checkQuiz(this,3,1,'q22b2')">He works?</button>
+</div><div class="quiz-feedback" id="fb_q22b2"></div></div>`;
+
+STATIC_CONTENT[41] = () => `
+<h3>📝 Presente Continuo (Progressive)</h3>
+<p>Formación: <strong>TO BE + verbo + ING</strong>. Para acciones en progreso <strong>ahora mismo</strong>.</p>
+<div class="vocab-grid">
+<div class="vcard"><div class="vcard-word">I am working<button class="speak-btn" onclick="say('I am working right now')">🔊</button></div><div class="vcard-meaning">Estoy trabajando</div></div>
+<div class="vcard"><div class="vcard-word">You are studying<button class="speak-btn" onclick="say('You are studying')">🔊</button></div><div class="vcard-meaning">Estás estudiando</div></div>
+<div class="vcard"><div class="vcard-word">He / She is running<button class="speak-btn" onclick="say('He is running')">🔊</button></div><div class="vcard-meaning">Él/Ella está corriendo</div></div>
+<div class="vcard"><div class="vcard-word">We / They are working<button class="speak-btn" onclick="say('They are working')">🔊</button></div><div class="vcard-meaning">Estamos/están trabajando</div></div>
+<div class="vcard"><div class="vcard-word">I am NOT working<button class="speak-btn" onclick="say('I am not working')">🔊</button></div><div class="vcard-meaning">No estoy trabajando</div></div>
+<div class="vcard"><div class="vcard-word">Are you working?<button class="speak-btn" onclick="say('Are you working?')">🔊</button></div><div class="vcard-meaning">¿Estás trabajando?</div></div>
+<div class="vcard"><div class="vcard-word">I am studying right now.<button class="speak-btn" onclick="say('I am studying right now')">🔊</button></div><div class="vcard-meaning">Estoy estudiando ahora mismo.</div></div>
+<div class="vcard"><div class="vcard-word">They are watching TV.<button class="speak-btn" onclick="say('They are watching TV')">🔊</button></div><div class="vcard-meaning">Ellos están viendo televisión.</div></div>
+</div>
+<p><strong>Reglas -ING:</strong> work→working | run→run<strong>n</strong>ing | make→mak<strong>ing</strong></p>
+<div class="quiz-block"><div class="quiz-q">❓ ¿Cuándo usas el Presente Continuo?</div><div class="quiz-opts" id="q41a1">
+<button class="quiz-opt" onclick="checkQuiz(this,0,2,'q41a1')">Hábitos diarios</button>
+<button class="quiz-opt" onclick="checkQuiz(this,1,2,'q41a1')">Verdades universales</button>
+<button class="quiz-opt" onclick="checkQuiz(this,2,2,'q41a1')">Acciones en progreso ahora</button>
+<button class="quiz-opt" onclick="checkQuiz(this,3,2,'q41a1')">El futuro lejano</button>
+</div><div class="quiz-feedback" id="fb_q41a1"></div></div>
+<div class="quiz-block"><div class="quiz-q">❓ ¿Cuál es correcto?</div><div class="quiz-opts" id="q41b2">
+<button class="quiz-opt" onclick="checkQuiz(this,0,2,'q41b2')">I am run</button>
+<button class="quiz-opt" onclick="checkQuiz(this,1,2,'q41b2')">I running</button>
+<button class="quiz-opt" onclick="checkQuiz(this,2,2,'q41b2')">I am running</button>
+<button class="quiz-opt" onclick="checkQuiz(this,3,2,'q41b2')">I run now</button>
+</div><div class="quiz-feedback" id="fb_q41b2"></div></div>`;
+
+STATIC_CONTENT[42] = () => `
+<h3>📝 Pasado Simple</h3>
+<p>Regulares: agrega <strong>-ED</strong>. Irregulares: forma especial. Palabras clave: <em>yesterday, last week, ago</em></p>
+<div class="vocab-grid">
+<div class="vcard"><div class="vcard-word">work → worked<button class="speak-btn" onclick="say('I worked yesterday')">🔊</button></div><div class="vcard-meaning">trabajé / trabajó</div></div>
+<div class="vcard"><div class="vcard-word">play → played<button class="speak-btn" onclick="say('I played football')">🔊</button></div><div class="vcard-meaning">jugué / jugó</div></div>
+<div class="vcard"><div class="vcard-word">study → studied<button class="speak-btn" onclick="say('She studied all night')">🔊</button></div><div class="vcard-meaning">estudié / estudió</div></div>
+<div class="vcard"><div class="vcard-word">stop → stopped<button class="speak-btn" onclick="say('He stopped running')">🔊</button></div><div class="vcard-meaning">paré / paró</div></div>
+<div class="vcard"><div class="vcard-word">Did you...?<button class="speak-btn" onclick="say('Did you call her?')">🔊</button></div><div class="vcard-meaning">¿Hiciste...? (pregunta)</div></div>
+<div class="vcard"><div class="vcard-word">Didn't / Did not<button class="speak-btn" onclick="say('She did not go to school')">🔊</button></div><div class="vcard-meaning">No... (negación)</div></div>
+<div class="vcard"><div class="vcard-word">I worked yesterday.<button class="speak-btn" onclick="say('I worked yesterday')">🔊</button></div><div class="vcard-meaning">Trabajé ayer.</div></div>
+<div class="vcard"><div class="vcard-word">She didn't come.<button class="speak-btn" onclick="say('She did not come')">🔊</button></div><div class="vcard-meaning">Ella no vino.</div></div>
+</div>
+<div class="quiz-block"><div class="quiz-q">❓ ¿Cuál forma la negación correctamente?</div><div class="quiz-opts" id="q42a1">
+<button class="quiz-opt" onclick="checkQuiz(this,0,2,'q42a1')">I not worked</button>
+<button class="quiz-opt" onclick="checkQuiz(this,1,2,'q42a1')">I didn't worked</button>
+<button class="quiz-opt" onclick="checkQuiz(this,2,2,'q42a1')">I didn't work</button>
+<button class="quiz-opt" onclick="checkQuiz(this,3,2,'q42a1')">I wasn't work</button>
+</div><div class="quiz-feedback" id="fb_q42a1"></div></div>
+<div class="quiz-block"><div class="quiz-q">❓ ¿Cómo se forma la pregunta?</div><div class="quiz-opts" id="q42b2">
+<button class="quiz-opt" onclick="checkQuiz(this,0,2,'q42b2')">Worked you?</button>
+<button class="quiz-opt" onclick="checkQuiz(this,1,2,'q42b2')">You worked?</button>
+<button class="quiz-opt" onclick="checkQuiz(this,2,2,'q42b2')">Did you work?</button>
+<button class="quiz-opt" onclick="checkQuiz(this,3,2,'q42b2')">Do you worked?</button>
+</div><div class="quiz-feedback" id="fb_q42b2"></div></div>`;
+
+STATIC_CONTENT[69] = () => `
+<h3>🔄 La Voz Pasiva</h3>
+<p>Estructura: <strong>TO BE + Participio Pasado</strong>. El sujeto recibe la acción en lugar de realizarla.</p>
+<div class="vocab-grid">
+<div class="vcard"><div class="vcard-word">Presente pasiva<button class="speak-btn" onclick="say('English is spoken here')">🔊</button></div><div class="vcard-meaning">English is spoken here.</div></div>
+<div class="vcard"><div class="vcard-word">Pasado pasiva<button class="speak-btn" onclick="say('The car was stolen')">🔊</button></div><div class="vcard-meaning">The car was stolen.</div></div>
+<div class="vcard"><div class="vcard-word">Futuro pasiva<button class="speak-btn" onclick="say('The letter will be sent tomorrow')">🔊</button></div><div class="vcard-meaning">The letter will be sent.</div></div>
+<div class="vcard"><div class="vcard-word">Perfecto pasiva<button class="speak-btn" onclick="say('The report has been finished')">🔊</button></div><div class="vcard-meaning">The report has been finished.</div></div>
+</div>
+<p><strong>Activa → Pasiva:</strong></p>
+<div class="vocab-grid">
+<div class="vcard"><div class="vcard-word">They built this house in 1990.<button class="speak-btn" onclick="say('They built this house in 1990')">🔊</button></div><div class="vcard-meaning">Activa</div></div>
+<div class="vcard"><div class="vcard-word">This house was built in 1990.<button class="speak-btn" onclick="say('This house was built in 1990')">🔊</button></div><div class="vcard-meaning">Pasiva (by them — opcional)</div></div>
+<div class="vcard"><div class="vcard-word">Someone stole my wallet.<button class="speak-btn" onclick="say('Someone stole my wallet')">🔊</button></div><div class="vcard-meaning">Activa</div></div>
+<div class="vcard"><div class="vcard-word">My wallet was stolen.<button class="speak-btn" onclick="say('My wallet was stolen')">🔊</button></div><div class="vcard-meaning">Pasiva</div></div>
+</div>
+<div class="quiz-block"><div class="quiz-q">❓ ¿Cuál oración está en voz pasiva?</div><div class="quiz-opts" id="q69a1">
+<button class="quiz-opt" onclick="checkQuiz(this,0,1,'q69a1')">She wrote the letter</button>
+<button class="quiz-opt" onclick="checkQuiz(this,1,1,'q69a1')">The letter was written by her</button>
+<button class="quiz-opt" onclick="checkQuiz(this,2,1,'q69a1')">She is writing the letter</button>
+<button class="quiz-opt" onclick="checkQuiz(this,3,1,'q69a1')">She will write the letter</button>
+</div><div class="quiz-feedback" id="fb_q69a1"></div></div>
+<div class="quiz-block"><div class="quiz-q">❓ Pasiva de "They speak English here":</div><div class="quiz-opts" id="q69b2">
+<button class="quiz-opt" onclick="checkQuiz(this,0,1,'q69b2')">English speaks here</button>
+<button class="quiz-opt" onclick="checkQuiz(this,1,1,'q69b2')">English is spoken here</button>
+<button class="quiz-opt" onclick="checkQuiz(this,2,1,'q69b2')">English spoken here</button>
+<button class="quiz-opt" onclick="checkQuiz(this,3,1,'q69b2')">They are spoken English</button>
+</div><div class="quiz-feedback" id="fb_q69b2"></div></div>`;
+
+STATIC_CONTENT[80] = () => `
+<h3>🎓 Examen Final y Certificado</h3>
+<p>¡Llegaste al final! Has completado las <strong>80 lecciones</strong> del curso ED English Academy.</p>
+<div class="vocab-grid">
+<div class="vcard"><div class="vcard-word">🌱 Básico (1-40)<button class="speak-btn" onclick="say('Congratulations on completing the basic level')">🔊</button></div><div class="vcard-meaning">Alfabeto, números, gramática esencial, vocabulario diario</div></div>
+<div class="vcard"><div class="vcard-word">🌿 Intermedio (41-65)<button class="speak-btn" onclick="say('You completed the intermediate level')">🔊</button></div><div class="vcard-meaning">Tiempos verbales, modales, comparativos, vocabulario temático</div></div>
+<div class="vcard"><div class="vcard-word">🔴 Avanzado (66-80)<button class="speak-btn" onclick="say('You are an advanced English speaker')">🔊</button></div><div class="vcard-meaning">Pasado perfecto, condicionales, voz pasiva, idioms, cultura</div></div>
+</div>
+<h3>📝 Preguntas del Examen Final</h3>
+<div class="quiz-block"><div class="quiz-q">❓ Condicional 3 correcto:</div><div class="quiz-opts" id="qfin1">
+<button class="quiz-opt" onclick="checkQuiz(this,0,1,'qfin1')">If I study, I would pass</button>
+<button class="quiz-opt" onclick="checkQuiz(this,1,1,'qfin1')">If I had studied, I would have passed</button>
+<button class="quiz-opt" onclick="checkQuiz(this,2,1,'qfin1')">If I studied, I would pass</button>
+<button class="quiz-opt" onclick="checkQuiz(this,3,1,'qfin1')">If I would study, I had passed</button>
+</div><div class="quiz-feedback" id="fb_qfin1"></div></div>
+<div class="quiz-block"><div class="quiz-q">❓ Voz pasiva de "They stole my wallet":</div><div class="quiz-opts" id="qfin2">
+<button class="quiz-opt" onclick="checkQuiz(this,0,1,'qfin2')">My wallet stolen</button>
+<button class="quiz-opt" onclick="checkQuiz(this,1,1,'qfin2')">My wallet was stolen</button>
+<button class="quiz-opt" onclick="checkQuiz(this,2,1,'qfin2')">My wallet is stolen</button>
+<button class="quiz-opt" onclick="checkQuiz(this,3,1,'qfin2')">My wallet has steal</button>
+</div><div class="quiz-feedback" id="fb_qfin2"></div></div>
+<div class="quiz-block"><div class="quiz-q">❓ Reported speech — "I am tired." → She said:</div><div class="quiz-opts" id="qfin3">
+<button class="quiz-opt" onclick="checkQuiz(this,0,1,'qfin3')">she is tired</button>
+<button class="quiz-opt" onclick="checkQuiz(this,1,1,'qfin3')">she was tired</button>
+<button class="quiz-opt" onclick="checkQuiz(this,2,1,'qfin3')">she were tired</button>
+<button class="quiz-opt" onclick="checkQuiz(this,3,1,'qfin3')">she has tired</button>
+</div><div class="quiz-feedback" id="fb_qfin3"></div></div>
+<div class="quiz-block"><div class="quiz-q">❓ False friend: "Actually" significa:</div><div class="quiz-opts" id="qfin4">
+<button class="quiz-opt" onclick="checkQuiz(this,0,2,'qfin4')">Actualmente</button>
+<button class="quiz-opt" onclick="checkQuiz(this,1,2,'qfin4')">En el futuro</button>
+<button class="quiz-opt" onclick="checkQuiz(this,2,2,'qfin4')">En realidad</button>
+<button class="quiz-opt" onclick="checkQuiz(this,3,2,'qfin4')">A veces</button>
+</div><div class="quiz-feedback" id="fb_qfin4"></div></div>
+<p style="margin-top:20px;text-align:center;font-size:15px;color:var(--teal)"><strong>🏆 Al completar esta lección se desbloquea tu certificado oficial en la sección <em>Perfil</em>.</strong></p>
+<p style="text-align:center"><button class="speak-btn" style="font-size:14px;padding:8px 16px" onclick="say('Congratulations! You have completed the ED English Academy course. You are now an advanced English speaker!')">🔊 Escuchar felicitación</button></p>`;
+
+
+
+// ═══════════════════════════════════════════
+// VARIABLES GLOBALES
+// ═══════════════════════════════════════════
+let user = null;
+let progress = { completed:[], points:0, streak:0, lastDate:null, achievements:[] };
+let currentLessonId = 0;
+let activeFilter = 'all';
+let phraseIdx = 0;
+let micActive = false;
+let recognition = null;
+let progressChart = null;
+
+// ═══════════════════════════════════════════
+// MULTI-PERFIL (localStorage)
+// ═══════════════════════════════════════════
+function allProfiles(){ try{ return JSON.parse(localStorage.getItem('eda_profiles')||'{}'); }catch(e){ return {}; } }
+function saveProfiles(p){ localStorage.setItem('eda_profiles', JSON.stringify(p)); }
+function getProfileProg(uid){ try{ return JSON.parse(localStorage.getItem('eda_prog_'+uid)||'null'); }catch(e){ return null; } }
+function saveProfileProg(uid,prog){ localStorage.setItem('eda_prog_'+uid, JSON.stringify(prog)); }
+function activeUID(){ return localStorage.getItem('eda_active')||null; }
+function setActiveUID(uid){ localStorage.setItem('eda_active', uid); }
+
+// ═══════════════════════════════════════════
+// SPLASH — PERFILES GUARDADOS
+// ═══════════════════════════════════════════
+function renderSavedProfiles(){
+  const profiles = allProfiles();
+  const keys = Object.keys(profiles);
+  const c = document.getElementById('savedProfiles');
+  if(!c) return;
+  if(keys.length===0){ c.innerHTML=''; return; }
+  c.innerHTML = '<div class="saved-label">— o selecciona tu perfil —</div>'
+    + keys.map(uid=>{
+        const p = profiles[uid];
+        const initials = (p.name||'?').slice(0,2).toUpperCase();
+        const prog = getProfileProg(uid);
+        const lecs = prog ? prog.completed.length : 0;
+        return `<div class="profile-chip" onclick="loginWithProfile('${uid}')">
+          <div class="profile-chip-av">${initials}</div>
+          <div class="profile-chip-info">
+            <div class="profile-chip-name">${p.name}</div>
+            <div class="profile-chip-meta">${lecs} lecciones completadas${p.level?' · '+p.level:''}</div>
+          </div>
+          <span class="profile-chip-arrow">›</span>
+        </div>`;
+      }).join('');
+}
+
+function showCreateProfile(){
+  document.getElementById('loginMain').style.display='none';
+  document.getElementById('loginForm').style.display='block';
+  setTimeout(()=>document.getElementById('inp_name').focus(),100);
+}
+function cancelCreateProfile(){
+  document.getElementById('loginForm').style.display='none';
+  document.getElementById('loginMain').style.display='block';
+}
+function submitCreateProfile(){
+  const name = document.getElementById('inp_name').value.trim();
+  const email = document.getElementById('inp_email').value.trim();
+  const level = document.getElementById('inp_level').value;
+  if(!name){ document.getElementById('inp_name').focus(); toast('Escribe tu nombre para continuar'); return; }
+  const uid = 'u_'+Date.now();
+  const profiles = allProfiles();
+  profiles[uid] = { name, email, level, created: new Date().toISOString() };
+  saveProfiles(profiles);
+  setActiveUID(uid);
+  enterApp({ uid, name, email, level });
+}
+function loginWithProfile(uid){
+  const p = allProfiles()[uid];
+  if(!p) return;
+  setActiveUID(uid);
+  enterApp({ uid, ...p });
+}
+function loginGuest(){
+  enterApp({ uid:'guest', name:'Invitado', email:'', level:'' });
+}
+
+// ═══════════════════════════════════════════
+// ENTRAR A LA APP
+// ═══════════════════════════════════════════
+function enterApp(userData){
+  user = userData;
+  const saved = getProfileProg(userData.uid);
+  if(saved) progress = saved;
+  else progress = { completed:[], points:0, streak:0, lastDate:null, achievements:[] };
+  updateStreak();
+  // Ocultar splash con animación
+  const splash = document.getElementById('splash');
+  splash.style.transition = 'opacity 0.5s, transform 0.5s';
+  splash.style.opacity = '0';
+  splash.style.transform = 'scale(1.04)';
+  setTimeout(()=>{
+    splash.style.display='none';
+    const app = document.getElementById('app');
+    app.style.display='flex';
+    app.classList.add('show');
+    updateHeader();
+    renderAll();
+    updateAvatarDisplay();
+    if('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(()=>{});
+  }, 500);
+}
+
+function saveProgress(){ if(!user) return; saveProfileProg(user.uid, progress); }
+
+function updateStreak(){
+  const today = new Date().toDateString();
+  if(!progress.lastDate){
+    progress.streak=1; progress.lastDate=today;
+  } else if(progress.lastDate===today){
+    // ya visitó hoy
+  } else {
+    const last=new Date(progress.lastDate), now=new Date(today);
+    const diff=(now-last)/(1000*60*60*24);
+    if(diff===1) progress.streak=(progress.streak||0)+1;
+    else if(diff>1) progress.streak=1;
+    progress.lastDate=today;
+  }
+  saveProgress();
+}
+
+// ═══════════════════════════════════════════
+// RENDER PRINCIPAL
+// ═══════════════════════════════════════════
+function renderAll(){
+  if(!user) return;
+  const n = progress.completed.length;
+  const pct = Math.round(n/TOTAL*100);
+  const streak = progress.streak||0;
+  const pts = progress.points;
+
+  // Greeting
+  const gn = document.getElementById('greetName');
+  if(gn) gn.textContent = user.name ? user.name.split(' ')[0] : 'Estudiante';
+
+  // Stats
+  const el = id => document.getElementById(id);
+  if(el('sLecciones')) el('sLecciones').textContent=n;
+  if(el('sRacha'))     el('sRacha').textContent=streak;
+  if(el('sPuntos'))    el('sPuntos').textContent=pts;
+  if(el('sProg'))      el('sProg').textContent=pct+'%';
+
+  // Level
+  let lvl,icon,desc,barPct;
+  if(n<10)       { lvl='Principiante'; icon='🌱'; desc=`${n} de 80 lecciones`; barPct=n*10; }
+  else if(n<40)  { lvl='Básico';       icon='📗'; desc=`${n} de 40 básicas completadas`; barPct=Math.round(n/40*100); }
+  else if(n<65)  { lvl='Intermedio';   icon='🌿'; desc=`${n-40} de 25 intermedias`; barPct=Math.round((n-40)/25*100); }
+  else if(n<80)  { lvl='Avanzado';     icon='🔴'; desc=`${n-65} de 15 avanzadas`; barPct=Math.round((n-65)/15*100); }
+  else           { lvl='ED Master 🏆'; icon='👑'; desc='¡Curso 100% completado!'; barPct=100; }
+  if(el('levelIcon')) el('levelIcon').textContent=icon;
+  if(el('levelName')) el('levelName').textContent=lvl;
+  if(el('levelDesc')) el('levelDesc').textContent=desc;
+  if(el('levelBar'))  el('levelBar').style.width=Math.min(barPct,100)+'%';
+  if(el('progPct'))   el('progPct').textContent=pct+'%';
+
+  // Chart
+  const ctx = document.getElementById('chartCanvas')?.getContext('2d');
+  if(ctx){
+    const basic=progress.completed.filter(i=>i<=40).length;
+    const inter=progress.completed.filter(i=>i>=41&&i<=65).length;
+    const adv=progress.completed.filter(i=>i>=66).length;
+    if(progressChart) progressChart.destroy();
+    progressChart = new Chart(ctx, {
+      type:'bar',
+      data:{
+        labels:['Básico (40)','Intermedio (25)','Avanzado (15)'],
+        datasets:[{
+          label:'Completadas',
+          data:[basic,inter,adv],
+          backgroundColor:['rgba(0,212,184,0.7)','rgba(245,200,66,0.7)','rgba(245,66,90,0.7)'],
+          borderRadius:8, borderSkipped:false
+        }]
+      },
+      options:{
+        responsive:true,
+        plugins:{ legend:{display:false} },
+        scales:{
+          y:{ max:40, grid:{ color:'rgba(255,255,255,0.04)' }, ticks:{ color:'#7070A0', font:{size:11} } },
+          x:{ grid:{ display:false }, ticks:{ color:'#7070A0', font:{size:11} } }
+        }
+      }
+    });
+  }
+
+  // Ach strip (Home)
+  const strip = document.getElementById('achStrip');
+  if(strip){
+    const unlocked = progress.achievements||[];
+    const unlockedAchs = ACHIEVEMENTS.filter(a=>unlocked.includes(a.id));
+    strip.innerHTML = unlockedAchs.length===0
+      ? '<div style="color:var(--text3);font-size:13px;padding:8px 0">Completa lecciones para desbloquear logros 🏆</div>'
+      : unlockedAchs.map(a=>`<div class="ach-chip unlocked"><div class="ach-chip-icon">${a.icon}</div><div class="ach-chip-name">${a.name}</div></div>`).join('');
+  }
+
+  // Ach grid (panel)
+  const grid = document.getElementById('achGrid');
+  if(grid){
+    const unlocked = progress.achievements||[];
+    grid.innerHTML = ACHIEVEMENTS.map(a=>{
+      const done=unlocked.includes(a.id);
+      return `<div class="ach-card ${done?'unlocked':'locked'}">
+        <div class="ach-card-icon">${a.icon}</div>
+        <div class="ach-card-name">${a.name}</div>
+        <div class="ach-card-desc">${a.desc}</div>
+      </div>`;
+    }).join('');
+  }
+
+  // Next lessons
+  const nextEl = document.getElementById('nextLessons');
+  if(nextEl){
+    const pending=[];
+    for(let i=1;i<=TOTAL&&pending.length<5;i++) if(!progress.completed.includes(i)) pending.push(i);
+    if(pending.length===0){
+      nextEl.innerHTML='<div style="text-align:center;padding:24px;color:var(--teal)">🎓 ¡Curso completo! Descarga tu certificado.</div>';
+    } else {
+      nextEl.innerHTML=pending.map(i=>{
+        const lv=getLevelOf(i);
+        const lb=lv==='basic'?'🌱 Básico':lv==='intermediate'?'🌿 Intermedio':'🔴 Avanzado';
+        return `<div class="next-row" onclick="openLesson(${i})">
+          <div class="next-num">${i}</div>
+          <div class="next-info"><div class="next-title">${TITLES[i]}</div><div class="next-meta">${lb} · +${getPtsOf(i)} pts</div></div>
+          <span class="next-arrow">›</span>
+        </div>`;
+      }).join('');
+    }
+  }
+
+  // Profile panel
+  updateProfilePanel();
+  renderLessonsList();
+}
+
+// Alias
+function renderHome(){ renderAll(); }
+function renderLessons(){ renderLessonsList(); }
+
+function renderLessonsList(){
+  const c = document.getElementById('lessonsList');
+  if(!c) return;
+  const q = (document.getElementById('searchInput')?.value||'').toLowerCase().trim();
+  let html='', count=0;
+  for(let i=1;i<=TOTAL;i++){
+    const lv=getLevelOf(i);
+    const done=progress.completed.includes(i);
+    const title=TITLES[i]||'';
+    if(activeFilter==='basic'&&lv!=='basic') continue;
+    if(activeFilter==='intermediate'&&lv!=='intermediate') continue;
+    if(activeFilter==='advanced'&&lv!=='advanced') continue;
+    if(activeFilter==='done'&&!done) continue;
+    if(activeFilter==='pending'&&done) continue;
+    if(q&&!title.toLowerCase().includes(q)&&!String(i).includes(q)) continue;
+    const pts=getPtsOf(i);
+    const lvl=lv==='basic'?'🌱 Básico':lv==='intermediate'?'🌿 Intermedio':'🔴 Avanzado';
+    const numClass=done?'done-num':lv;
+    const numContent=done?'✓':i;
+    html+=`<div class="lesson-row${done?' done':''}" onclick="openLesson(${i})">
+      <div class="lnum ${numClass}">${numContent}</div>
+      <div class="lbody"><div class="ltitle">${title}</div><div class="lsub">${lvl} · +${pts} pts</div></div>
+      ${done?'<span class="lcheck"><i class="fas fa-check-circle"></i></span>':'<span style="color:var(--text3);font-size:14px">›</span>'}
+    </div>`;
+    count++;
+  }
+  c.innerHTML = count===0 ? '<div style="padding:40px;text-align:center;color:var(--text3)">No se encontraron lecciones</div>' : html;
+}
+
+function setFilter(f,btn){
+  activeFilter=f;
+  document.querySelectorAll('.ftab').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  renderLessonsList();
+}
+function filterLessons(){ renderLessonsList(); }
+
+// ═══════════════════════════════════════════
+// NAVEGACIÓN
+// ═══════════════════════════════════════════
+function showPanel(name,btn){
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  const panelId = {Home:'pHome',Lessons:'pLessons',Ach:'pAch',Profile:'pProfile'}[name];
+  if(panelId){ const p=document.getElementById(panelId); if(p) p.classList.add('active'); }
+  if(btn) btn.classList.add('active');
+  if(name==='Home') renderAll();
+  if(name==='Profile') updateProfilePanel();
+}
+
+// ═══════════════════════════════════════════
+// ABRIR LECCIÓN
+// ═══════════════════════════════════════════
+window.openLesson = function(id){
+  currentLessonId = id;
+  document.getElementById('modalTitle').textContent = TITLES[id];
+  document.getElementById('modalPts').textContent = '+'+getPtsOf(id)+' pts';
+  const done = progress.completed.includes(id);
+  const btn = document.getElementById('btnComplete');
+  btn.disabled = done;
+  btn.innerHTML = done
+    ? '<i class="fas fa-check-circle"></i> Ya completada'
+    : '<i class="fas fa-check-circle"></i> Completar Lección';
+  document.getElementById('modalBody').innerHTML = STATIC_CONTENT[id]();
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+};
+
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+function modalBgClick(e){ if(e.target===document.getElementById('modal')) closeModal(); }
+
+// ═══════════════════════════════════════════
+// COMPLETAR LECCIÓN + CONFETI
+// ═══════════════════════════════════════════
+function completeLesson(){
+  if(!currentLessonId || progress.completed.includes(currentLessonId)){
+    toast('Ya completaste esta lección ✅');
+    return;
+  }
+  progress.completed.push(currentLessonId);
+  progress.points += getPtsOf(currentLessonId);
+  saveProgress();
+  checkAchievements();
+  launchConfetti();
+  toast('🎉 +'+getPtsOf(currentLessonId)+' pts — ¡Lección completada!');
+  const btn = document.getElementById('btnComplete');
+  if(btn){ btn.disabled=true; btn.innerHTML='<i class="fas fa-check-circle"></i> Ya completada'; }
+  renderAll();
+}
+
+// Confeti real
+function launchConfetti(){
+  const colors=['#5B6EF5','#7B5CF5','#00D4B8','#F5C842','#F5425A','#42F5A0'];
+  for(let i=0;i<60;i++){
+    setTimeout(()=>{
+      const el=document.createElement('div');
+      el.className='confetti-piece';
+      el.style.left=Math.random()*100+'vw';
+      el.style.background=colors[Math.floor(Math.random()*colors.length)];
+      el.style.width=(Math.random()*6+4)+'px';
+      el.style.height=(Math.random()*12+8)+'px';
+      el.style.animationDuration=(Math.random()*2+1.5)+'s';
+      el.style.animationDelay='0s';
+      el.style.transform='rotate('+Math.random()*360+'deg)';
+      document.body.appendChild(el);
+      setTimeout(()=>el.remove(), 3500);
+    }, i*30);
+  }
+}
+
+// ═══════════════════════════════════════════
+// LOGROS
+// ═══════════════════════════════════════════
+const ACHIEVEMENTS = [
+  {id:'first',   icon:'🥇', name:'Primer Paso',      desc:'Completa tu 1ª lección',           check:p=>p.completed.length>=1},
+  {id:'five',    icon:'🎯', name:'5 Lecciones',       desc:'Completa 5 lecciones',              check:p=>p.completed.length>=5},
+  {id:'ten',     icon:'⚡', name:'10 Lecciones',      desc:'Completa 10 lecciones',             check:p=>p.completed.length>=10},
+  {id:'basic',   icon:'🌱', name:'Básico Completo',   desc:'Completa las 40 lecciones básicas', check:p=>{ for(let j=1;j<=40;j++) if(!p.completed.includes(j)) return false; return true; }},
+  {id:'inter',   icon:'🌿', name:'Intermedio',        desc:'Completa hasta lección 65',         check:p=>{ for(let j=1;j<=65;j++) if(!p.completed.includes(j)) return false; return true; }},
+  {id:'adv',     icon:'🔴', name:'Nivel Avanzado',    desc:'Completa las 80 lecciones',         check:p=>p.completed.length>=80},
+  {id:'streak3', icon:'💧', name:'Racha 3 días',      desc:'3 días seguidos',                   check:p=>(p.streak||0)>=3},
+  {id:'streak7', icon:'🔥', name:'Racha Semanal',     desc:'7 días seguidos',                   check:p=>(p.streak||0)>=7},
+  {id:'streak30',icon:'🏅', name:'Mes Completo',      desc:'30 días seguidos',                  check:p=>(p.streak||0)>=30},
+  {id:'pts100',  icon:'💰', name:'100 Puntos',        desc:'Acumula 100 puntos XP',             check:p=>p.points>=100},
+  {id:'pts500',  icon:'💎', name:'500 Puntos',        desc:'Acumula 500 puntos XP',             check:p=>p.points>=500},
+  {id:'pts1000', icon:'👑', name:'1000 Puntos',       desc:'Acumula 1000 puntos XP',            check:p=>p.points>=1000},
+  {id:'master',  icon:'🏆', name:'ED Master',         desc:'Curso 100% completado',             check:p=>p.completed.length>=80},
+];
+
+function checkAchievements(){
+  const unlocked = progress.achievements||[];
+  let newOne = false;
+  ACHIEVEMENTS.forEach(a=>{
+    if(!unlocked.includes(a.id) && a.check(progress)){
+      unlocked.push(a.id);
+      newOne=true;
+      setTimeout(()=>toast('🏅 Logro desbloqueado: '+a.name+' '+a.icon), 800);
+    }
+  });
+  if(newOne){ progress.achievements=unlocked; saveProgress(); }
+}
+
+// ═══════════════════════════════════════════
+// HEADER Y PERFIL
+// ═══════════════════════════════════════════
+function updateHeader(){
+  if(!user) return;
+  const initials=(user.name||'U').slice(0,2).toUpperCase();
+  const hav=document.getElementById('hAvatar');
+  if(hav) hav.innerHTML=initials;
+  const hn=document.getElementById('hName');
+  if(hn) hn.textContent=user.name||'Usuario';
+  const hxp=document.getElementById('hXP');
+  if(hxp) hxp.textContent=progress.points+' XP';
+}
+
+function updateProfilePanel(){
+  if(!user) return;
+  const initials=(user.name||'U').slice(0,2).toUpperCase();
+  const el=id=>document.getElementById(id);
+  if(el('profAv'))    el('profAv').innerHTML=initials;
+  if(el('profName'))  el('profName').textContent=user.name||'Usuario';
+  if(el('profEmail')) el('profEmail').textContent=user.email||(user.uid==='guest'?'Modo invitado':'');
+  if(el('profLevel')) el('profLevel').textContent=user.level?'Nivel: '+user.level:'';
+  if(el('profLec'))   el('profLec').textContent=progress.completed.length;
+  if(el('profRacha')) el('profRacha').textContent=progress.streak||0;
+  if(el('profPts'))   el('profPts').textContent=progress.points;
+  updateAvatarDisplay();
+}
+
+// ═══════════════════════════════════════════
+// AVATAR
+// ═══════════════════════════════════════════
+const AVATARS = {
+  male:[
+    {id:'m1',name:'Hombre 1',icon:'👨'},{id:'m2',name:'Hombre 2',icon:'🧑'},
+    {id:'m3',name:'Profesor',icon:'👨‍🏫'},{id:'m4',name:'Estudiante',icon:'👨‍🎓'},
+    {id:'m5',name:'Ejecutivo',icon:'👨‍💼'},{id:'m6',name:'Astronauta',icon:'👨‍🚀'},
+    {id:'m7',name:'Chef',icon:'👨‍🍳'},{id:'m8',name:'Artista',icon:'👨‍🎨'},
+    {id:'m9',name:'Deportista',icon:'🧑‍🦱'},
+  ],
+  female:[
+    {id:'f1',name:'Mujer 1',icon:'👩'},{id:'f2',name:'Chica',icon:'👧'},
+    {id:'f3',name:'Profesora',icon:'👩‍🏫'},{id:'f4',name:'Estudiante',icon:'👩‍🎓'},
+    {id:'f5',name:'Ejecutiva',icon:'👩‍💼'},{id:'f6',name:'Astronauta',icon:'👩‍🚀'},
+    {id:'f7',name:'Chef',icon:'👩‍🍳'},{id:'f8',name:'Artista',icon:'👩‍🎨'},
+    {id:'f9',name:'Doctora',icon:'👩‍⚕️'},
+  ]
+};
+let currentGender='male';
+let selectedAvatarId=null;
+
+function openAvatarModal(){
+  document.getElementById('avatarModal').classList.add('open');
+  renderAvatarGrid();
+}
+function closeAvatarModal(){ document.getElementById('avatarModal').classList.remove('open'); }
+
+function selectGender(g){
+  currentGender=g;
+  document.getElementById('gBtnM').classList.toggle('active',g==='male');
+  document.getElementById('gBtnF').classList.toggle('active',g==='female');
+  renderAvatarGrid();
+}
+
+function renderAvatarGrid(){
+  const saved=localStorage.getItem('eda_avatar');
+  const avs=AVATARS[currentGender];
+  // Previsualizar el guardado
+  if(saved){ const all=[...AVATARS.male,...AVATARS.female]; const f=all.find(a=>a.id===saved); if(f) document.getElementById('avPreview').innerHTML=f.icon; }
+  document.getElementById('avGrid').innerHTML=avs.map(av=>`
+    <div class="av-option ${saved===av.id?'sel':''}" onclick="pickAvatar('${av.id}',this)">
+      <div class="av-option-icon">${av.icon}</div>
+      <div class="av-option-name">${av.name}</div>
+    </div>`).join('');
+}
+
+function pickAvatar(id,el){
+  selectedAvatarId=id;
+  document.querySelectorAll('.av-option').forEach(o=>o.classList.remove('sel'));
+  el.classList.add('sel');
+  const all=[...AVATARS.male,...AVATARS.female];
+  const found=all.find(a=>a.id===id);
+  if(found) document.getElementById('avPreview').innerHTML=found.icon;
+}
+
+function saveAvatar(){
+  if(!selectedAvatarId) return;
+  localStorage.setItem('eda_avatar',selectedAvatarId);
+  updateAvatarDisplay();
+  closeAvatarModal();
+  toast('✅ Avatar guardado');
+}
+
+function updateAvatarDisplay(){
+  const saved=localStorage.getItem('eda_avatar');
+  if(!saved) return;
+  const all=[...AVATARS.male,...AVATARS.female];
+  const found=all.find(a=>a.id===saved);
+  if(!found) return;
+  document.querySelectorAll('.hav, .prof-av').forEach(el=>{
+    if(el) el.innerHTML=found.icon;
+  });
+}
+
+// ═══════════════════════════════════════════
+// EDITAR PERFIL
+// ═══════════════════════════════════════════
+function openEditModal(){
+  if(!user||user.uid==='guest'){ toast('Los invitados no pueden editar el perfil'); return; }
+  document.getElementById('edit_name').value=user.name||'';
+  document.getElementById('edit_email').value=user.email||'';
+  document.getElementById('edit_level').value=user.level||'';
+  document.getElementById('editModal').classList.add('open');
+}
+function closeEditModal(){ document.getElementById('editModal').classList.remove('open'); }
+function saveEditProfile(){
+  const name=document.getElementById('edit_name').value.trim();
+  if(!name){ toast('El nombre es obligatorio'); return; }
+  user.name=name;
+  user.email=document.getElementById('edit_email').value.trim();
+  user.level=document.getElementById('edit_level').value;
+  const profiles=allProfiles();
+  if(profiles[user.uid]){ profiles[user.uid].name=name; profiles[user.uid].email=user.email; profiles[user.uid].level=user.level; saveProfiles(profiles); }
+  updateHeader();
+  updateProfilePanel();
+  closeEditModal();
+  toast('✅ Perfil actualizado');
+}
+
+// ═══════════════════════════════════════════
+// LOGOUT / RESET
+// ═══════════════════════════════════════════
+function confirmLogout(){
+  if(confirm('¿Cambiar de perfil? Tu progreso quedará guardado.')){
+    localStorage.removeItem('eda_active');
+    location.reload();
+  }
+}
+function resetProgress(){
+  if(!confirm('¿Reiniciar TODO el progreso? No se puede deshacer.')) return;
+  progress={completed:[],points:0,streak:0,lastDate:new Date().toDateString(),achievements:[]};
+  saveProgress();
+  renderAll();
+  updateHeader();
+  toast('🔄 Progreso reiniciado');
+}
+
+// ═══════════════════════════════════════════
+// COMPARTIR Y CERTIFICADO
+// ═══════════════════════════════════════════
+function shareProgress(){
+  const txt=`🎓 Mi progreso en ED English Academy\n📚 ${progress.completed.length}/${TOTAL} lecciones\n⭐ ${progress.points} puntos XP\n🔥 Racha de ${progress.streak||0} días\n\n¡Aprende inglés conmigo!`;
+  if(navigator.share) navigator.share({title:'ED English',text:txt}).catch(()=>{});
+  else { navigator.clipboard.writeText(txt).then(()=>toast('📋 Copiado')).catch(()=>toast('No se pudo copiar')); }
+}
+
+function downloadCert(){
+  if(progress.completed.length<TOTAL){ toast('Completa las '+TOTAL+' lecciones. Llevas '+progress.completed.length+'/'+TOTAL); return; }
+  const name=user?.name||'Estudiante';
+  const date=new Date().toLocaleDateString('es-ES',{year:'numeric',month:'long',day:'numeric'});
+  const html=`<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body{margin:0;padding:60px 40px;background:#f8f6f0;font-family:'Plus Jakarta Sans',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh;}
+    .cert{background:white;border:10px solid #0033a0;padding:60px;max-width:820px;width:100%;text-align:center;position:relative;box-shadow:0 30px 80px rgba(0,0,0,.15);}
+    .cert::before{content:'';position:absolute;inset:14px;border:2px solid #ffcc00;pointer-events:none;}
+    .logo{font-size:60px;margin-bottom:8px;}
+    h1{font-family:'Playfair Display',serif;color:#0033a0;font-size:44px;margin:0 0 6px;}
+    h2{color:#cf142b;font-size:18px;font-weight:600;margin:0 0 30px;}
+    .stars{color:#ffcc00;font-size:20px;letter-spacing:4px;margin:12px 0;}
+    .name{font-family:'Playfair Display',serif;font-size:38px;color:#0033a0;border-bottom:3px solid #ffcc00;display:inline-block;padding:0 40px;margin:16px 0;}
+    p{color:#555;font-size:15px;line-height:1.7;}
+    .sigs{display:flex;justify-content:space-around;margin-top:50px;}
+    .sig{border-top:2px solid #333;padding-top:8px;width:220px;font-size:13px;color:#333;}
+  </style></head>
+  <body><div class="cert">
+    <div class="logo">🎓</div>
+    <h1>ED English Academy</h1>
+    <h2>Certificado de Finalización</h2>
+    <div class="stars">★ ★ ★ ★ ★ ★ ★ ★</div>
+    <p>Este certificado se otorga con orgullo a</p>
+    <div class="name">${name}</div>
+    <p>Por haber completado satisfactoriamente el <strong>Curso Completo de Inglés</strong><br>
+    con <strong>${TOTAL} lecciones</strong> — niveles Básico, Intermedio y Avanzado<br>
+    acumulando <strong>${progress.points} puntos XP</strong></p>
+    <p style="margin-top:16px">Emitido el <strong>${date}</strong></p>
+    <div class="sigs">
+      <div class="sig">Edgardo Moya Zapata<br><em>Director Académico</em></div>
+      <div class="sig">ED English Academy<br><em>Certificación Oficial</em></div>
+    </div>
+  </div></body></html>`;
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([html],{type:'text/html'}));
+  a.download='certificado_ed_english_'+name.replace(/\s/g,'_')+'.html';
+  a.click();
+  URL.revokeObjectURL(a.href);
+  toast('📄 Certificado descargado');
+}
+
+// ═══════════════════════════════════════════
+// AUDIO / VOZ
+// ═══════════════════════════════════════════
+function say(text){
+  if(!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const u=new SpeechSynthesisUtterance(text);
+  u.lang='en-US'; u.rate=0.85; u.pitch=1;
+  const voices=window.speechSynthesis.getVoices();
+  const eng=voices.find(v=>v.lang.startsWith('en')&&v.localService);
+  if(eng) u.voice=eng;
+  window.speechSynthesis.speak(u);
+}
+
+function checkQuiz(btn,chosen,correct,id){
+  const opts=document.querySelectorAll('#'+id+' .quiz-opt');
+  opts.forEach(o=>o.disabled=true);
+  btn.classList.add(chosen===correct?'correct':'wrong');
+  if(chosen!==correct) opts[correct].classList.add('correct');
+  document.getElementById('fb_'+id).innerHTML=chosen===correct?'✅ ¡Correcto! Muy bien.':'❌ Incorrecto. La respuesta correcta está marcada.';
+}
+
+// ═══════════════════════════════════════════
+// PRÁCTICA DE VOZ
+// ═══════════════════════════════════════════
+const PHRASES = ["Hello, how are you?"];
+
+function updateVoicePhrase(){ const p=PHRASES[phraseIdx%PHRASES.length]; document.getElementById('voicePhrase').textContent='"'+p+'"'; }
+function prevPhrase(){ phraseIdx=(phraseIdx-1+PHRASES.length)%PHRASES.length; updateVoicePhrase(); stopMic(); }
+function nextPhrase(){ phraseIdx=(phraseIdx+1)%PHRASES.length; updateVoicePhrase(); stopMic(); }
+function speakPhrase(){ say(PHRASES[phraseIdx%PHRASES.length]); }
+function stopMic(){
+  if(recognition){ try{recognition.stop();}catch(e){} }
+  micActive=false;
+  const btn=document.getElementById('micBtn');
+  if(btn){ btn.classList.remove('listening'); btn.innerHTML='<i class="fas fa-microphone"></i>'; }
+  document.getElementById('voiceFeedback').textContent='';
+}
+function toggleMic(){
+  if(micActive){ stopMic(); return; }
+  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){
+    document.getElementById('voiceFeedback').textContent='❌ Usa Chrome para voz';
+    return;
+  }
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recognition=new SR();
+  recognition.lang='en-US'; recognition.continuous=false; recognition.interimResults=false;
+  const micBtn=document.getElementById('micBtn');
+  micBtn.classList.add('listening'); micBtn.innerHTML='<i class="fas fa-stop"></i>'; micActive=true;
+  document.getElementById('voiceFeedback').textContent='🎤 Escuchando...';
+  recognition.onresult=e=>{
+    const said=e.results[0][0].transcript.toLowerCase().trim();
+    const expected=PHRASES[phraseIdx%PHRASES.length].toLowerCase();
+    micActive=false; micBtn.classList.remove('listening'); micBtn.innerHTML='<i class="fas fa-microphone"></i>';
+    const score=similarity(said,expected);
+    if(score>0.55){ document.getElementById('voiceFeedback').innerHTML='✅ ¡Excelente! +5 XP — "'+said+'"'; progress.points+=5; saveProgress(); updateHeader(); checkAchievements(); }
+    else if(score>0.3){ document.getElementById('voiceFeedback').innerHTML='🟡 Casi bien: "'+said+'" — intenta de nuevo'; }
+    else{ document.getElementById('voiceFeedback').innerHTML='❌ Dijiste: "'+said+'". Practica más.'; }
+  };
+  recognition.onerror=()=>stopMic();
+  recognition.onend=()=>{ micActive=false; micBtn.classList.remove('listening'); micBtn.innerHTML='<i class="fas fa-microphone"></i>'; };
+  recognition.start();
+}
+function similarity(a,b){ const sa=new Set(a.split(' ')),sb=new Set(b.split(' ')); let m=0; sa.forEach(w=>{if(sb.has(w))m++;}); return m/Math.max(sa.size,sb.size); }
+
+// ═══════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════
+let toastTimer=null;
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg; el.classList.add('show');
+  if(toastTimer) clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'),3500);
+}
+
+// ═══════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════
+(function init(){
+  if(window.speechSynthesis){
+    window.speechSynthesis.getVoices();
+    window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices();
+  }
+  renderSavedProfiles();
+  const uid=activeUID();
+  if(uid){
+    if(uid==='guest') loginGuest();
+    else{
+      const profiles=allProfiles();
+      if(profiles[uid]) loginWithProfile(uid);
+      else{ localStorage.removeItem('eda_active'); }
+    }
+  }
+})();
+
+</script>
+</body>
+</html>
